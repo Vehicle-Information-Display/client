@@ -1,3 +1,7 @@
+### Svelte ###
+client/node_modules/
+client/public/build/
+
 ### vscode ###
 .vscode/*
 !.vscode/settings.json
@@ -57,7 +61,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-### Node ###
+### General Node ###
 # Logs
 logs
 *.log
