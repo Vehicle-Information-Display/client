@@ -105,7 +105,7 @@
 	<button on:click={start} id="startButton">Start the Simulation</button>
 
 	<!-- img to be used as the main user in the simulation in the canvas -->
-	<img on:load={drawIm} id="car" hidden src="img/car.png">
+	<img on:load={drawIm} id="car" hidden src="img/car.png" alt="">
 
 	<!-- the canvas element -->
 	<canvas
