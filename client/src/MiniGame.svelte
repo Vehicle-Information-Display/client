@@ -38,7 +38,7 @@
 
     let drawIm = () => {
         //draws the car image in the bottom middle
-        var img = document.getElementById("car");
+        const img = document.getElementById("car");
         canvasContext.drawImage(img, (canvasDims.w / 2) - (userDim.w / 2), (canvasDims.h) - (userDim.h), userDim.w, userDim.h);
     }
 
@@ -65,7 +65,6 @@
             hidden
             id="game"
             width={canvasDims.w}
-            height={canvasDims.h}
-    />
+            height={canvasDims.h}></canvas>
     <!-- on:mousemove={start}  -->
 </div>
