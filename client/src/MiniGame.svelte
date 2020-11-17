@@ -9,13 +9,13 @@
     let canvas; //the canvas object
     let canvasContext; //the canvas context object
     let canvasDims = { //canvas dimensions
-        w: 600, //width
+        w: 900, //width
         h: 600 //height
     };
     let times = []; //record the times of events. first one is simulation start
     let userDim = {
-        w: 30, // width : 600/12....12 spaces across the board to move\
-        h: 30 // height : for being square
+        w: 50, // width : 900/50....18 spaces across the board to move\
+        h: 50 // height : 600/50.. 12 height
     };
 
     //onMount function
@@ -23,7 +23,15 @@
     onMount(() => {
         console.log("inside onMount function")
         drawCanvas();
-
+        document.addEventListener('keydown', function (event) {
+            console.log(event);
+            if (event.key === 'd') {
+                console.log("right");
+            }
+            if (event.key === 'a') {
+                console.log("left")
+            }
+        });
     });
 
     //canvas functions
