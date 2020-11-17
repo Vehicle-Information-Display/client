@@ -14,9 +14,64 @@
     };
     let times = []; //record the times of events. first one is simulation start
     let userDim = {
-        w: 50, // width : 900/50....18 spaces across the board to move\
-        h: 50 // height : 600/50.. 12 height
+        w: canvasDims.w/12, // width : 12 spaces across the board to move\
+        h: canvasDims.h/10, // height : 10 spaces height
+        currX: 0,
+        currY: 0
     };
+    let score = 0; //score of the minigame //each time it is changed add it to the times array
+
+    //objects of the items that will be displayed in the canvas
+    class Obj {
+        //creates new object with specified height and width
+        constructor(height, width, x, y) {
+            this.height = height;
+            this.width = width;
+            this.x = x;
+            this.y = y;
+        }
+
+        move(horizontal, vertical) {
+            //clear current canvas of current object
+            canvasContext.fillRect(this.x, this.y, this.width, this.height);
+
+            //now draw the image based on the move specified in the values
+            //x and y is on the top left. positive horizontal is right. positive vertical is down
+            this.x += horizontal;
+            this.y += vertical;
+            canvasContext.fillRect(this.x, this.y, this.width, this.height);
+
+            //check clash with user
+            //if clash, then decrement score and add time of decrement
+            //override object from canvas
+            //delete object
+            //otherwise if no clash then move on
+            let clash = ((this.x > userDim.currX && this.x < userDim.currX+userDim.w)
+                || (this.x+this.width > userDim.currX && this.x+this.width < userDim.currX+userDim.w))
+                && (this.y+this.height < userDim.currY);
+            if(clash) {
+                score -= 1;
+                var clashTime = Date.now();
+                times.push({
+                    "Event Name": "Clash",
+                    "Time": clashTime
+                });
+                console.log(times['Event Name'] + ": " + times['Time']);
+                return;
+            }
+
+            //if no clash then check if object reached the floor
+            if(this.y >= canvasDims.h) {
+                score += 1;
+                var scoreAddition = Date.now();
+                times.push({
+                    "Event Name": "Scored Point",
+                    "Time": scoreAddition
+                });
+                console.log(times['Event Name'] + ": " + times['Time']);
+            }
+        }
+    }
 
     //onMount function
     //Date.now into times for starting time of simulation
@@ -24,7 +79,7 @@
         console.log("inside onMount function")
         drawCanvas();
         document.addEventListener('keydown', function (event) {
-            console.log(event);
+            // console.log(event);
             if (event.key === 'd') {
                 console.log("right");
             }
@@ -32,6 +87,8 @@
                 console.log("left")
             }
         });
+        // setInterval()
+
     });
 
     //canvas functions
@@ -47,11 +104,19 @@
     let drawIm = () => {
         //draws the car image in the bottom middle
         const img = document.getElementById("car");
-        canvasContext.drawImage(img, (canvasDims.w / 2) - (userDim.w / 2), (canvasDims.h) - (userDim.h), userDim.w, userDim.h);
+        userDim.currX = (canvasDims.w / 2) - (userDim.w / 2);
+        userDim.currY = (canvasDims.h) - (userDim.h);
+        canvasContext.drawImage(img, userDim.currX, userDim.currY, userDim.w, userDim.h);
     }
 
     let start = () => {
-        instruction = "Started at " + Date.now();
+        var timeStarted = Date.now();
+        times.push({
+            "Event Name": "Started Game at",
+            "Time": timeStarted
+        });
+        console.log(times['Event Name'] + ": " + times['Time']);
+        instruction = "Started at " + timeStarted;
         document.getElementById("game").removeAttribute("hidden");
         document.getElementById("startButton").remove();
     }
@@ -75,4 +140,5 @@
             width={canvasDims.w}
             height={canvasDims.h}></canvas>
     <!-- on:mousemove={start}  -->
+    <p>{score}</p>
 </div>
