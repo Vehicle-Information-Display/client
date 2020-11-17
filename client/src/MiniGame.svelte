@@ -5,30 +5,47 @@
     //instructions
     let instruction = "Ready?"
 
-    //canvas stuff for simulation
+    //canvas stuff for minigame
     let canvas; //the canvas object
     let canvasContext; //the canvas context object
     let canvasDims = { //canvas dimensions
         w: 900, //width
         h: 600 //height
     };
-    let times = []; //record the times of events. first one is simulation start
+    let widthSpaces = 12; //12 spaces across the board to move //columns in objMiniGameSimulation
+    let heightSpaces = 10 //10 spaces of objects of height same as userDim.h
     let userDim = {
-        w: canvasDims.w/12, // width : 12 spaces across the board to move\
-        h: canvasDims.h/10, // height : 10 spaces height
+        w: canvasDims.w/12, // width
+        h: canvasDims.h/10, // height
         currX: 0,
         currY: 0
     };
+    //columns are widthSpaces, 0 are no object creation, 1 are object creation.
+    //Rows spawn everytime space is available
+    let objMiniGameSimulation = [
+        [0,0,0,1,0,0,1,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,1,0,0,1,0,0,0],
+        [1,0,0,0,0,0,0,1,0,0,1,0],
+        [0,0,1,0,1,0,0,1,0,0,0,0],
+        [1,0,1,0,0,1,0,0,1,1,0,0],
+        [0,0,1,0,1,0,0,0,1,1,0,1],
+        [0,1,0,0,1,0,1,0,1,0,0,1],
+    ];
+
+    //simulation score and times variables
+    let times = []; //record the times of events. first one is simulation start
     let score = 0; //score of the minigame //each time it is changed add it to the times array
 
     //objects of the items that will be displayed in the canvas
     class Obj {
         //creates new object with specified height and width
-        constructor(height, width, x, y) {
+        constructor(height, width, x) {
             this.height = height;
             this.width = width;
             this.x = x;
-            this.y = y;
+            this.y = 0;
         }
 
         move(horizontal, vertical) {
