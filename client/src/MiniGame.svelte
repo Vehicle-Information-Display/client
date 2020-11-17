@@ -22,6 +22,7 @@
     };
     //columns are widthSpaces, 0 are no object creation, 1 are object creation.
     //Rows spawn everytime space is available
+    //First IN Last OUT
     let objMiniGameSimulation = [
         [0,0,0,1,0,0,1,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0,0],
@@ -38,6 +39,27 @@
     let times = []; //record the times of events. first one is simulation start
     let score = 0; //score of the minigame //each time it is changed add it to the times array
 
+    //function to do clash calculation
+    function clashCalculation(objx, objy, objWidth, objHeight) {
+        return ((objx > userDim.currX && objx < userDim.currX+userDim.w)
+            || (objx+objWidth > userDim.currX && objx+objWidth < userDim.currX+userDim.w))
+            && (objy+objHeight > userDim.currY);
+    }
+
+    //function to check the clash between user and any other object in ACTIVE rows
+    //ACTIVE row is just the first row in the objMiniGameSimulation
+    function checkClashFromUser() {
+        for (let i = 0; i < widthSpaces; i++) {
+            if(objMiniGameSimulation[0][i] != null || objMiniGameSimulation[0][i] != 0) {
+                var objRef = objMiniGameSimulation[0][i];
+                //do clash calculations if hit is false
+                if(objRef.hit == false) {
+                    clashCalculation(objRef.x, objRef.y, objRef.width, objRef.height);
+                }
+            }
+        }
+    }
+
     //objects of the items that will be displayed in the canvas
     class Obj {
         //creates new object with specified height and width
@@ -46,6 +68,7 @@
             this.width = width;
             this.x = x;
             this.y = 0;
+            this.hit = false;
         }
 
         move(horizontal, vertical) {
@@ -63,11 +86,10 @@
             //override object from canvas
             //delete object
             //otherwise if no clash then move on
-            let clash = ((this.x > userDim.currX && this.x < userDim.currX+userDim.w)
-                || (this.x+this.width > userDim.currX && this.x+this.width < userDim.currX+userDim.w))
-                && (this.y+this.height < userDim.currY);
+            let clash = clashCalculation(this.x, this.y, this.width, this.height);
             if(clash) {
                 score -= 1;
+                this.hit = true;
                 var clashTime = Date.now();
                 times.push({
                     "Event Name": "Clash",
