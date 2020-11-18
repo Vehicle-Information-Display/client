@@ -3,22 +3,25 @@
     import SimpleDash from "./SimpleDash.svelte";
     import { onMount } from "svelte";
     import Game from "./game.svelte";
-    import Instruction from "./instruction.svelte"
+    import Instruction from "./instruction.svelte";
 
-    import Outer from './Outer.svelte';
+    import Outer from "./Outer.svelte";
 
     // App Props
     let canvas;
 
     let game = { status: "on" };
 
-    let instruction = { status: "on"};
+    let instruction = { status: "on" };
 
     let props = {
         name: "Simple Dashboard",
         dashboardValues: {
             speed: 0,
             rpm: 0,
+            wheelRotation: 0,
+            seatWarmerLeft: "warm",
+            seatWarmerRight: "cool",
         },
     };
 
@@ -42,11 +45,36 @@
         props.dashboardValues.rpm -= 1000;
     };
 
+    let rotWhlRight = () => {
+        console.log("Turning Wheel Right...");
+        props.dashboardValues.wheelRotation += 3;
+    };
 
-	function handleMessage(event) {
-		alert(event.detail.text);
-	}
-    
+    let rotWhlLeft = () => {
+        console.log("Turning Wheel Left...");
+        props.dashboardValues.wheelRotation -= 3;
+        console.log(props.dashboardValues.wheelRotation);
+    };
+
+    let changeSeatWarmerLeft = () => {
+        if (props.dashboardValues.seatWarmerLeft == "warm") {
+            props.dashboardValues.seatWarmerLeft = "cool";
+        } else {
+            props.dashboardValues.seatWarmerLeft = "warm";
+        }
+    };
+
+    let changeSeatWarmerRight = () => {
+        if (props.dashboardValues.seatWarmerRight == "warm") {
+            props.dashboardValues.seatWarmerRight = "cool";
+        } else {
+            props.dashboardValues.seatWarmerRight = "warm";
+        }
+    };
+
+    function handleMessage(event) {
+        alert(event.detail.text);
+    }
 </script>
 
 <style>
@@ -54,14 +82,15 @@
         z-index: -1;
         /* text-align: center;
         padding: 1em; */
-        width:auto;
-        height:auto;
+        width: auto;
+        height: auto;
         margin: 0 auto;
         /* border: 7px solid black; */
         display: grid;
         grid-template-columns: auto;
         grid-template-rows: [gameRow-start] 45vh [gameRow-end instructionRow-start] 5vh [instructionRow-end dash-start] 50vh [dash-end];
         border-radius: 35px;
+        overflow: hidden;
     }
 
     .game-container {
@@ -69,15 +98,16 @@
         grid-row: gameRow-start / gameRow-end instuctionRow-start;
         border: 7px solid lightgreen;
         border-radius: 25px;
-        position:relative;
+        position: relative;
     }
 
     .instruction-container {
         display: grid;
-        grid-row: gameRow-end instuctionRow-start / instructionRow-end dash-start;
+        grid-row: gameRow-end instuctionRow-start / instructionRow-end
+            dash-start;
         border: 7px solid skyblue;
         border-radius: 25px;
-        position:relative;
+        position: relative;
     }
 
     .dashArea-container {
@@ -86,7 +116,7 @@
         border: 7px solid black;
         border-radius: 25px;
         background-color: black;
-        position:relative;
+        position: relative;
     }
 
     h1 {
@@ -94,18 +124,17 @@
         font-weight: 100;
     }
 
-    .message-container {
+    /* .message-container {
         z-index: 3;
         position:"relative";
         text-align:"center";
-    }
+    } */
 
     @media (min-width: 640px) {
         main {
             max-width: none;
         }
     }
-
 </style>
 
 <main>
@@ -117,15 +146,21 @@
 
     <div class="game-container">
         <Game bind:Game={game} />
+        <button on:click={rotWhlRight}>Turn Wheel Right</button>
+        <button on:click={rotWhlLeft}>Turn Wheel Left</button>
+        <button on:click={incSpd}>Increment Speed</button>
+        <button on:click={decSpd}>Decrement Speed</button>
+        <button on:click={changeSeatWarmerLeft}>Left Seat Change</button>
+        <button on:click={changeSeatWarmerRight}>Right Seat Change</button>
     </div>
 
-    <div class = "instruction-container">
+    <div class="instruction-container">
         <Instruction bind:Instruction={instruction} />
     </div>
     <div class="dashArea-container">
         <SimpleDash bind:values={props.dashboardValues} />
     </div>
-    <div class="message-container">
-        <Outer on:message={handleMessage}/>
-    </div>
+    <!-- <div class="message-container"> -->
+    <!-- <Outer on:message={handleMessage}/> -->
+    <!-- </div> -->
 </main>

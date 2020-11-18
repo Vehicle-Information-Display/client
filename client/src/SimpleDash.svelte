@@ -9,22 +9,30 @@
     import Temperature from "./tempModule.svelte";
     import MusicControls from "./MusicControls.svelte";
     import SteeringWheel from "./SteeringWheel.svelte";
+    import SeatWC from "./SeatWarmer.svelte";
+    import Outer from "./Outer.svelte";
+
     export let values = {
         speed: 0,
-        rpm: 0
+        rpm: 0,
+        wheelRotation: 0,
+        seatWarmerLeft: "cool",
+        seatWarmerRight: "cool"
     };
 
     let speedometerProps = {};
     // let tachometerProps = {};
     // let testingProps = {};
-    let rpmProps = {};
+    // let rpmProps = {};
+    let wheelRotation = {};
+    let seatWarmerLeft = {};
+    let seatWarmerRight = {};
 
-    // let hazardLights = { status: "on" };
-    // let tackySun = { status: "on" };
+    let hazardLights = { status: "on" };
+    let tackySun = { status: "on" };
     let climateControl = { status: "on" };
     let cogWheel = { status: "on" };
-    let musicControls = { status: "on"};
-    let steeringWheel = { status: "on"};
+    let musicControls = { status: "on" };
 
     $: speedometerProps = {
         name: "Speedometer",
@@ -36,10 +44,29 @@
     //     "value": values.rpm / 200
     // }
 
-    $: rpmProps = {
-        name: "Tachometer",
-        value: values.rpm / 200,
+    // $: rpmProps = {
+    //     name: "Tachometer",
+    //     value: values.rpm / 200,
+    // };
+
+    $: wheelRotation = {
+        status: "on",
+        wheelRotation: values.wheelRotation,
     };
+
+    $: seatWarmerLeft = {
+        name: "seatWarmerLeft",
+        status: values.seatWarmerLeft,
+    };
+
+    $: seatWarmerRight = {
+        name: "seatWarmerRight",
+        status: values.seatWarmerRight,
+    };
+
+    function handleMessage(event) {
+        alert(event.detail.text);
+    }
 </script>
 
 <style>
@@ -240,14 +267,14 @@
 
     /* all dash element */
     .music-container {
-        display:grid;
+        display: grid;
         grid-area: music;
         border: solid black;
         border-radius: 25px;
         /* background-color: white; */
         position: relative;
         grid-template-columns: 20% 20% 20% 20% 20%;
-        grid-template-rows: 40% 40% 20%;
+        grid-template-rows: 38% 38% 24%;
         grid-template-areas:
             "type type type type type"
             "type type type type type"
@@ -297,29 +324,40 @@
         /* border-radius: 25px; */
     }
 
+    .entertainment-container {
+        text-align: center;
+        grid-area: entertainment;
+        display: grid;
+        grid-template-columns: 35% 35% 30%;
+        grid-template-rows: 15% 35% 25% 25%;
+        grid-template-areas:
+            "optionsInfo optionsInfo optionsInfo"
+            "nav music music"
+            "nav music music"
+            "nav climateControl climateControl";
+    }
+
     .allDash-container {
         text-align: center;
         display: grid;
-        grid-template-columns: 35% 20% 20% 12.5% 12.5%;
-        grid-template-rows: 15% 35% 25% 25%;
+        grid-template-columns: 35% 20% 45%;
+        grid-template-rows: auto;
         grid-template-areas:
-            "wheelArea gap optionsInfo optionsInfo optionsInfo"
-            "wheelArea gap nav music music"
-            "wheelArea gap nav music music"
-            "wheelArea gap nav climateControl climateControl";
+            "wheelArea gap entertainment"
+            "wheelArea gap entertainment"
+            "wheelArea gap entertainment"
+            "wheelArea gap entertainment";
     }
 </style>
 
 <div class="allDash-container">
     <div class="wheelArea-container">
         <div class="wheel-container">
-            <SteeringWheel bind:sW={steeringWheel} />
+            <SteeringWheel bind:sW={wheelRotation} />
         </div>
-        <div class="empty-container">
-            
-        </div>
-        <div class="blankSpace1-container"></div>
-        <div class="blankSpace2-container"></div>
+        <div class="empty-container" />
+        <div class="blankSpace1-container" />
+        <div class="blankSpace2-container" />
         <div class="behindWheelScreen-container">
             <div class="textAlert-container">ALERT</div>
             <div class="rpm-container">
@@ -387,49 +425,55 @@
             </div>
         </div>
     </div>
-    <div class="optionsInfo-container">
-        <!-- <fontSize>Options/Info</fontSize> -->
-        <!-- <HazardLights bind:hL={hazardLights} />
+    <div class="entertainment-container">
+        <div class="optionsInfo-container">
+            <!-- <fontSize>Options/Info</fontSize> -->
+            <!-- <HazardLights bind:hL={hazardLights} />
         <TackySun bind:tS={tackySun} /> -->
-        <div class="mySettings-container">
-            <CogWheel bind:cW={cogWheel} />
+            <div class="mySettings-container">
+                <CogWheel bind:cW={cogWheel} />
+            </div>
+            <div class="myTime-container">
+                <!-- <p style="color:white">Time</p> -->
+                <Clock />
+            </div>
+            <div class="myWeather-container">
+                <TackySun bind:tS={tackySun} />
+            </div>
+            <div class="myTemperature-container">
+                <fontSize>
+                    <!-- <p style="color:white">Temperature</p> -->
+                    <Temperature />
+                </fontSize>
+            </div>
         </div>
-        <div class="myTime-container">
-            <!-- <p style="color:white">Time</p> -->
-            <Clock />
+        <div class="nav-container">
+            <fontSize>Nav</fontSize><br />
+            <Outer on:message={handleMessage} />
         </div>
-        <div class="myWeather-container">
-            <TackySun bind:tS={tackySun} />
+        <div class="music-container">
+            <div class="musicButtons-container">
+                <MusicControls bind:mC={musicControls} />
+            </div>
+            <div class="musicType-container">SONG DETAILS......
+            </div>
+            
         </div>
-        <div class="myTemperature-container">
-            <fontSize>
-                <!-- <p style="color:white">Temperature</p> -->
-                <Temperature />
-            </fontSize>
-        </div>
-    </div>
-    <div class="nav-container">
-        <fontSize>Nav</fontSize>
-    </div>
-    <div class="music-container">
-        <div class ="musicButtons-container">
-            <MusicControls bind:mC={musicControls} />
-        </div>
-        <div class ="musicType-container">
-            SONG DETAILS......
-        </div>
-    </div>
-    <div class="climateControl-container">
-        <div class="leftSeatOption-container" />
+        <div class="climateControl-container">
+            <div class="leftSeatOption-container">
+                <SeatWC bind:seatWC={seatWarmerLeft} />
+            </div>
             <div class="climateChange-container">
                 <ClimateControl bind:cC={climateControl} />
             </div>
-        <div class="rightSeatOption-container" />
+            <div class="rightSeatOption-container">
+                <SeatWC bind:seatWC={seatWarmerRight} />
+            </div>
+        </div>
     </div>
     <div class="gap-container" />
 </div>
 
-<!-- <HalfGauge bind:halfProps={rpmProps} /> -->
 <!-- <SimpleGauge bind:props={speedometerProps} /> -->
 <!-- <SimpleGauge bind:props={tachometerProps}/>
 <!-- <Clock /> -->

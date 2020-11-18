@@ -1,4 +1,5 @@
 <script>
+	import Volume from "./volumeSlider.svelte";
     export let mC = {
         status: "on",
     };
@@ -28,7 +29,7 @@
 
     .buttonArea {
 		padding-left: 3vw;
-		padding-top: 1vh;
+		padding-top: 0.5vh;
         display: grid;
         grid-template-columns: auto;
         grid-template-rows: auto;
@@ -46,7 +47,7 @@
     <div class="buttonArea">
 		<!-- --------------------------------------------------------------- -->
 		<div class = "volume">
-			PUT THE VOLUME CODE HERE
+			<Volume />
 		</div>
 		<!-- --------------------------------------------------------------- -->
         <div class="back">
