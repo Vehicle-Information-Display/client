@@ -12,8 +12,8 @@
         w: 900, //width
         h: 600 //height
     };
-    let widthSpaces = 12; //12 spaces across the board to move //columns in objMiniGameSimulation
-    let heightSpaces = 10 //10 spaces of objects of height same as userDim.h
+    let widthSpaces = 12; //12-1? spaces across the board to move //columns in objMiniGameSimulation
+    let heightSpaces = 10 //10-1? spaces of objects of height same as userDim.h
     let userDim = {
         w: canvasDims.w/widthSpaces, // width
         h: canvasDims.h/heightSpaces, // height
@@ -34,8 +34,7 @@
         [0,0,1,0,1,0,0,0,1,1,0,1],
         [0,1,0,0,1,0,1,0,1,0,0,1],
     ];
-    let firstActiveRow = 0;
-    let lastActiveRow = -1;
+    let activeRow = 0;
 
     //simulation score and times variables
     let times = []; //record the times of events. first one is simulation start
@@ -52,10 +51,10 @@
     //ACTIVE row is just the first row in the objMiniGameSimulation
     function checkClashFromUser() {
         for (let i = 0; i < widthSpaces; i++) {
-            if(objMiniGameSimulation[0][i] != null || objMiniGameSimulation[0][i] != 0) {
+            if(objMiniGameSimulation[activeRow][i] != null || objMiniGameSimulation[activeRow][i] !== 0) {
                 var objRef = objMiniGameSimulation[0][i];
                 //do clash calculations if hit is false
-                if(objRef.hit == false) {
+                if(objRef.hit === false) {
                     clashCalculation(objRef.x, objRef.y, objRef.width, objRef.height);
                 }
             }
@@ -74,15 +73,20 @@
         }
 
         move(horizontal, vertical) {
-            //clear current canvas of current object
-            canvasContext.fillRect(this.x, this.y, this.width, this.height);
+            //set the image based on whether it was hit or not
+            let img = "";
+            if(this.hit) {
+                img = "carHitObj";
+            } else {
+                img = "carObj";
+            }
 
-            //now draw the image based on the move specified in the values
-            //x and y is on the top left. positive horizontal is right. positive vertical is down
+            //"move" the actual image
+            moveIMG(this.x, this.y, this.width, this.height, horizontal, vertical, img);
+
+            //still has to update the values
             this.x += horizontal;
             this.y += vertical;
-            canvasContext.fillRect(this.x, this.y, this.width, this.height);
-
             //check clash with user
             //if clash, then decrement score and add time of decrement
             //override object from canvas
@@ -114,6 +118,19 @@
         }
     }
 
+    //move img in the game
+    function moveIMG(x, y, width, height, horizontal, vertical, imgID) {
+        //get the image
+        const img = document.getElementById("car");
+
+        //clear current canvas of current object
+        canvasContext.fillRect(x, y, width, height);
+
+        //now draw the image based on the move specified in the values
+        //x and y is on the top left. positive horizontal is right. positive vertical is down
+        canvasContext.drawImage(img, x + horizontal, y + vertical, width, height);
+    }
+
     //onMount function
     //Date.now into times for starting time of simulation
     onMount(() => {
@@ -123,15 +140,24 @@
             // console.log(event);
             if (event.key === 'd') {
                 console.log("right");
+                if(userDim.currX + canvasDims.w/widthSpaces < canvasDims.w - canvasDims.w/widthSpaces) {
+                    moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, canvasDims.w / widthSpaces, 0, "car");
+                    userDim.currX += canvasDims.w / widthSpaces;
+                }
             }
             if (event.key === 'a') {
-                console.log("left")
+                console.log("left");
+                if(userDim.currX - canvasDims.w/widthSpaces > 0) {
+                    moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, -canvasDims.w / widthSpaces, 0, "car");
+                    userDim.currX += -canvasDims.w / widthSpaces;
+                }
             }
+            // add other event keys
         });
         // create objects
         for(let i = 0; i < objMiniGameSimulation.length; i++) {
             for(let j = 0; j < objMiniGameSimulation[i].length; j++) {
-                if(objMiniGameSimulation[i][j] == 1) {
+                if(objMiniGameSimulation[i][j] === 1) {
                     objMiniGameSimulation[i][j] = new Obj(canvasDims.h/heightSpaces, canvasDims.w/widthSpaces, canvasDims.w/widthSpaces*j);
                 }
             }
@@ -183,7 +209,9 @@
     <button on:click={start} id="startButton">Start the Simulation</button>
 
     <!-- img to be used as the main user in the simulation in the canvas -->
-    <img on:load={drawIm} id="car" hidden src="img/car.png" alt="">
+    <img on:load={drawIm} id="car" hidden src="img/car.png" width="0px" height="0px" alt="">
+    <img id="carObj" hidden src="img/objcar.png" width="0px" height="0px" alt="">
+    <img id="carHitObj" hidden src="img/hitcar.png" width="0px" height="0px" alt="">
 
     <!-- the canvas element -->
     <canvas
