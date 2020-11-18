@@ -74,7 +74,7 @@
 
         move(horizontal, vertical) {
             //set the image based on whether it was hit or not
-            let img = "";
+            let img;
             if(this.hit) {
                 img = "carHitObj";
             } else {
@@ -121,7 +121,7 @@
     //move img in the game
     function moveIMG(x, y, width, height, horizontal, vertical, imgID) {
         //get the image
-        const img = document.getElementById("car");
+        const img = document.getElementById(imgID);
 
         //clear current canvas of current object
         canvasContext.fillRect(x, y, width, height);
