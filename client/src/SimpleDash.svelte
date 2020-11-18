@@ -343,6 +343,7 @@
     }
 
     .entertainment-container {
+        z-index: 10;
         text-align: center;
         border: 4px solid silver;
         background-color: black;
