@@ -19,6 +19,7 @@
         dashboardValues: {
             speed: 0,
             rpm: 0,
+            wheelRotation: 0
         },
     };
 
@@ -42,6 +43,18 @@
         props.dashboardValues.rpm -= 1000;
     };
 
+    let rotWhlRight = () => {
+        console.log("Turning Wheel Right...");
+        props.dashboardValues.wheelRotation += 3;
+    }
+
+    let rotWhlLeft = () => {
+        console.log("Turning Wheel Left...");
+        props.dashboardValues.wheelRotation -= 3;
+        console.log(props.dashboardValues.wheelRotation);
+        
+    }
+
 
 	function handleMessage(event) {
 		alert(event.detail.text);
@@ -62,6 +75,7 @@
         grid-template-columns: auto;
         grid-template-rows: [gameRow-start] 45vh [gameRow-end instructionRow-start] 5vh [instructionRow-end dash-start] 50vh [dash-end];
         border-radius: 35px;
+        overflow:hidden;
     }
 
     .game-container {
@@ -94,11 +108,11 @@
         font-weight: 100;
     }
 
-    .message-container {
+    /* .message-container {
         z-index: 3;
         position:"relative";
         text-align:"center";
-    }
+    } */
 
     @media (min-width: 640px) {
         main {
@@ -117,6 +131,10 @@
 
     <div class="game-container">
         <Game bind:Game={game} />
+        <button on:click={rotWhlRight}>Turn Wheel Right</button>
+        <button on:click={rotWhlLeft}>Turn Wheel Left</button>
+        <button on:click={incSpd}>Increment Speed</button>
+        <button on:click={decSpd}>Decrement Speed</button>
     </div>
 
     <div class = "instruction-container">
@@ -124,8 +142,9 @@
     </div>
     <div class="dashArea-container">
         <SimpleDash bind:values={props.dashboardValues} />
+        
     </div>
-    <div class="message-container">
-        <Outer on:message={handleMessage}/>
-    </div>
+    <!-- <div class="message-container"> -->
+        <!-- <Outer on:message={handleMessage}/> -->
+    <!-- </div> -->
 </main>
