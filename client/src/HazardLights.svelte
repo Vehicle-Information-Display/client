@@ -2,6 +2,16 @@
 	export let hL = {
 		status: false,
 	};
+
+	let hazard1 = true;
+
+	setInterval(() => {
+		if (hL.status == true) {
+			hazard1 = !hazard1;
+		} else {
+			hazard1 = true;
+		}
+	}, 500);
 </script>
 
 <style>
@@ -22,11 +32,10 @@
 		top: -15%;
 		transform: scale(0.7);
 	}
-
 </style>
 
 <div class="image-wrapper">
-	{#if hL.status == false}
+	{#if hazard1}
 		<div class="hazOff">
 			<svg>
 				xmlns:dc="http://purl.org/dc/elements/1.1/"
