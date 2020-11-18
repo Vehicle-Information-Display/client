@@ -3,7 +3,7 @@
 
     export let values = {
         "speed": 0,
-        "rpm": 0
+        "engineRPM": 0
     }
 
     let speedometerProps = {}
@@ -16,7 +16,7 @@
 
     $:tachometerProps = {
         "name": "Tachometer",
-        "value": values.rpm / 200
+        "value": values.engineRPM / 200
     }
 </script>
 

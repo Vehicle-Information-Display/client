@@ -1,46 +1,83 @@
 <script>
 	// --[ Imports ]--
+	import {simulationData, simulationTick, simulationSendMessage, simulationRegisterMessageToApp} from "./simulation";
 	import SimpleDash from './SimpleDash.svelte';
 	import MiniGame from './MiniGame.svelte';
 
 	// --[ App Props ]--
 	let props = {
 		"name": "Simple Dashboard",
-		"dashboardValues": {
-			"speed": 55,
-			"rpm": 1500
-		}
+		"dashboardData": null
 	}
 
 	// --[ Global Simulation Setup ]--
 
-	// A function to handle messages thrown by the simulation
-	let messageCallback = (message) => {
-		console.log("Received a message: " + message);
-	}
+	// Register a callback function to handle messages thrown by the simulation
+	simulationRegisterMessageToApp((messageToApp) => {
+		console.log("[DEBUG] Received a message from the simulation!");
+		console.log(messageToApp);
+	});
 
 	// Global Tick Count (Used for "global time")
-	let globalTick = 0;
+	let globalTickCount = 0;
 
 	// Tick function to be called every 500 milliseconds
 	// All time-dependent calls should be registered here
-	let tick = () => {
-		console.log("Tick");
-		globalTick++;	 // Increment Tick Counter
+	let globalTick = () => {
+		// Call simulation tick handler
+		simulationTick(globalTickCount);
+
+		// Increment tick counter
+		globalTick++;
 	}
 
 	// Call tick every 500 milliseconds
-	setInterval(tick, 500);
+	setInterval(globalTick, 500);
 
 	// --[ Dashboard Tests ]--
+
+	// Update properties when simulationData updates
+	const unsubscribe = simulationData.subscribe(data => {
+		props.dashboardData = data;
+	});
+
+	// Increment the speed
 	let incSpd = () => {
-		console.log("Incrementing speed...");
-		props.dashboardValues.speed += 1;
+		console.log("[DEBUG] Incrementing speed..." + props.dashboardValues.speed);
+		// props.dashboardValues.speed += 1;
+		let message = {
+			"timestamp" : Date(),
+			"name" : "Test",
+			"category" : "simulation_instruction",
+			"intendedTarget" : "simulation_core",
+			"tags" : ["simulation_status_change"],
+			"payload" : {
+				"instruction": "setSpeed",
+				"value": parseInt(props.dashboardValues.speed) + 1,
+			}
+		}
+
+		// Send message to the simulation
+		simulationSendMessage(message)
 	}
 
 	let incRPM = () => {
-		console.log("Incrementing RPM...");
-		props.dashboardValues.rpm += 1000;
+		console.log("[DEBUG] Incrementing RPM...");
+		// props.dashboardValues.rpm += 1000;
+		let message = {
+			"timestamp" : Date(),
+			"name" : "Test",
+			"category" : "simulation_instruction",
+			"intendedTarget" : "simulation_core",
+			"tags" : ["simulation_status_change"],
+			"payload" : {
+				"instruction": "setRPM",
+				"value": parseInt(props.dashboardValues.rpm) + 1,
+			}
+		}
+
+		// Send message to the simulation
+		simulationSendMessage(message)
 	}
 </script>
 
@@ -68,6 +105,6 @@
 	<h1>Now Testing: {props.name}</h1>
 	<button on:click={incSpd}>Increment Speed</button>
 	<button on:click={incRPM}>Increment RPM</button>
-	<SimpleDash bind:values={props.dashboardValues}/>
+	<SimpleDash bind:values={props.dashboardData}/>
 	<MiniGame />
 </main>
