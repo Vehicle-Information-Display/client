@@ -9,26 +9,30 @@
     import Temperature from "./tempModule.svelte";
     import MusicControls from "./MusicControls.svelte";
     import SteeringWheel from "./SteeringWheel.svelte";
+    import SeatWC from "./SeatWarmer.svelte";
     import Outer from "./Outer.svelte";
 
     export let values = {
         speed: 0,
         rpm: 0,
         wheelRotation: 0,
+        seatWarmerLeft: "cool",
+        seatWarmerRight: "cool"
     };
 
     let speedometerProps = {};
-    let tachometerProps = {};
-    let testingProps = {};
-    let rpmProps = {};
+    // let tachometerProps = {};
+    // let testingProps = {};
+    // let rpmProps = {};
     let wheelRotation = {};
+    let seatWarmerLeft = {};
+    let seatWarmerRight = {};
 
     let hazardLights = { status: "on" };
     let tackySun = { status: "on" };
     let climateControl = { status: "on" };
     let cogWheel = { status: "on" };
     let musicControls = { status: "on" };
-    let steeringWheel = { status: "on" };
 
     $: speedometerProps = {
         name: "Speedometer",
@@ -40,14 +44,24 @@
     //     "value": values.rpm / 200
     // }
 
-    $: rpmProps = {
-        name: "Tachometer",
-        value: values.rpm / 200,
-    };
+    // $: rpmProps = {
+    //     name: "Tachometer",
+    //     value: values.rpm / 200,
+    // };
 
     $: wheelRotation = {
         status: "on",
         wheelRotation: values.wheelRotation,
+    };
+
+    $: seatWarmerLeft = {
+        name: "seatWarmerLeft",
+        status: values.seatWarmerLeft,
+    };
+
+    $: seatWarmerRight = {
+        name: "seatWarmerRight",
+        status: values.seatWarmerRight,
     };
 
     function handleMessage(event) {
@@ -446,11 +460,15 @@
             
         </div>
         <div class="climateControl-container">
-            <div class="leftSeatOption-container" />
+            <div class="leftSeatOption-container">
+                <SeatWC bind:seatWC={seatWarmerLeft} />
+            </div>
             <div class="climateChange-container">
                 <ClimateControl bind:cC={climateControl} />
             </div>
-            <div class="rightSeatOption-container" />
+            <div class="rightSeatOption-container">
+                <SeatWC bind:seatWC={seatWarmerRight} />
+            </div>
         </div>
     </div>
     <div class="gap-container" />
