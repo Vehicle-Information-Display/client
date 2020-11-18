@@ -1,6 +1,6 @@
 <script>
     export let props = {
-        //"name": "Unknown",
+        "name": "Unknown",
         "value": 0
     }
 </script>
