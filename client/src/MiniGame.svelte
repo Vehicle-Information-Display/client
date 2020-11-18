@@ -15,8 +15,8 @@
     let widthSpaces = 12; //12 spaces across the board to move //columns in objMiniGameSimulation
     let heightSpaces = 10 //10 spaces of objects of height same as userDim.h
     let userDim = {
-        w: canvasDims.w/12, // width
-        h: canvasDims.h/10, // height
+        w: canvasDims.w/widthSpaces, // width
+        h: canvasDims.h/heightSpaces, // height
         currX: 0,
         currY: 0
     };
@@ -34,6 +34,8 @@
         [0,0,1,0,1,0,0,0,1,1,0,1],
         [0,1,0,0,1,0,1,0,1,0,0,1],
     ];
+    let firstActiveRow = 0;
+    let lastActiveRow = -1;
 
     //simulation score and times variables
     let times = []; //record the times of events. first one is simulation start
@@ -126,8 +128,19 @@
                 console.log("left")
             }
         });
+        // create objects
+        for(let i = 0; i < objMiniGameSimulation.length; i++) {
+            for(let j = 0; j < objMiniGameSimulation[i].length; j++) {
+                if(objMiniGameSimulation[i][j] == 1) {
+                    objMiniGameSimulation[i][j] = new Obj(canvasDims.h/heightSpaces, canvasDims.w/widthSpaces, canvasDims.w/widthSpaces*j);
+                }
+            }
+        }
+
         // setInterval()
 
+        // done
+        console.log("done");
     });
 
     //canvas functions
