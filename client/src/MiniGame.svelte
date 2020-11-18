@@ -37,9 +37,11 @@
         [0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,1,0,1,0,0,0,1,1,0,1],
         [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,0,0,1,0,1,0,1,0,0,1],
+        [0,1,0,0,1,0,1,0,1,0,0,1]
     ];
     let activeRow = 0;
+
+    let intervalID;
 
     //simulation score and times variables
     let times = []; //record the times of events. first one is simulation start
@@ -58,7 +60,7 @@
     function clashCalculation(objx, objy, objWidth, objHeight) {
         return ((objx > userDim.currX && objx < userDim.currX+userDim.w)
             || (objx+objWidth > userDim.currX && objx+objWidth < userDim.currX+userDim.w))
-            && (objy+objHeight > userDim.currY);
+            && (objy+objHeight >= userDim.currY);
     }
 
     //function to check the clash between user and any other object in ACTIVE rows
@@ -68,7 +70,7 @@
             if(objMiniGameSimulation[activeRow][i] != null || objMiniGameSimulation[activeRow][i] !== 0) {
                 var objRef = objMiniGameSimulation[0][i];
                 //do clash calculations if hit is false
-                if(objRef.hit === false) {
+                if(!objRef.hit && !objRef.finished) {
                     let clash = clashCalculation(objRef.x, objRef.y, objRef.width, objRef.height);
                     if(clash) {
                         objRef.hit = true;
@@ -89,8 +91,9 @@
             this.width = width;
             this.x = x;
             this.y = y;
-            this.hit = false;
-            this.finished = false;
+            this.hit = false; //got hit
+            this.finished = false; //finished out of the board
+            this.originalY = y; //used to reset obj height
         }
 
         move(horizontal, vertical) {
@@ -114,11 +117,15 @@
             //override object from canvas
             //delete object
             //otherwise if no clash then move on
-            if(!this.hit) {
+            if(!this.hit && !this.finished) {
+                // console.log("no hit calc");
                 let clash = clashCalculation(this.x, this.y, this.width, this.height);
                 if(clash) {
+                    // console.log(this);
+                    // console.log(userDim);
                     score -= 1;
                     this.hit = true;
+                    this.finished = true;
                     recordEvent("Clash", Date.now());
                     return;
                 }
@@ -126,6 +133,8 @@
 
             //if no clash then check if object reached the floor
             if(this.y >= canvasDims.h && !this.finished) {
+                // console.log(userDim);
+                // console.log(this);
                 score += 1;
                 recordEvent("Scored Point", Date.now());
                 this.finished = true;
@@ -146,10 +155,22 @@
         canvasContext.drawImage(img, x + horizontal, y + vertical, width, height);
     }
 
+    function createObj() {
+        for(let i = 0; i < objMiniGameSimulation.length; i++) {
+            for(let j = 0; j < objMiniGameSimulation[i].length; j++) {
+                if(objMiniGameSimulation[i][j] instanceof Obj) {
+                    objMiniGameSimulation[i][j].y = objMiniGameSimulation[i][j].originalY;
+                } else if(objMiniGameSimulation[i][j] === 1) {
+                    objMiniGameSimulation[i][j] = new Obj(canvasDims.h/heightSpaces, canvasDims.w/widthSpaces, canvasDims.w/widthSpaces*j, -canvasDims.h/heightSpaces*i*2);
+                }
+            }
+        }
+    }
+
     //onMount function
     //Date.now into times for starting time of simulation
     onMount(() => {
-        console.log("inside onMount function")
+        // console.log("inside onMount function")
         drawCanvas();
         document.addEventListener('keydown', function (event) {
             // console.log(event);
@@ -158,6 +179,7 @@
                 if(userDim.currX + canvasDims.w/widthSpaces < canvasDims.w - canvasDims.w/widthSpaces) {
                     moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, canvasDims.w / widthSpaces, 0, "car");
                     userDim.currX += canvasDims.w / widthSpaces;
+                    // console.log(userDim.currX);
                 }
                 checkClashFromUser();
             }
@@ -166,6 +188,7 @@
                 if(userDim.currX - canvasDims.w/widthSpaces > 0) {
                     moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, -canvasDims.w / widthSpaces, 0, "car");
                     userDim.currX += -canvasDims.w / widthSpaces;
+                    // console.log(userDim.currX);
                 }
                 checkClashFromUser();
             }
@@ -173,13 +196,7 @@
         });
 
         // create objects
-        for(let i = 0; i < objMiniGameSimulation.length; i++) {
-            for(let j = 0; j < objMiniGameSimulation[i].length; j++) {
-                if(objMiniGameSimulation[i][j] === 1) {
-                    objMiniGameSimulation[i][j] = new Obj(canvasDims.h/heightSpaces, canvasDims.w/widthSpaces, canvasDims.w/widthSpaces*j, -canvasDims.h/heightSpaces*i*2);
-                }
-            }
-        }
+        createObj();
 
         // done
         console.log("done");
@@ -193,8 +210,15 @@
                     objMiniGameSimulation[i][j].move(0, canvasDims.h/heightSpaces);
                     if(objMiniGameSimulation[i][j].finished === true) {
                         activeRow = i;
+
                     }
                 }
+            }
+            if(activeRow === objMiniGameSimulation.length-1) {
+                activeRow = 0;
+                clearInterval(intervalID);
+                createObj();
+                intervalID = setInterval(interval, 1000);
             }
         }
     }
@@ -212,7 +236,7 @@
     let drawIm = () => {
         //draws the car image in the bottom middle
         const img = document.getElementById("car");
-        userDim.currX = (canvasDims.w / 2) - (userDim.w*2);
+        userDim.currX = (canvasDims.w / 2) - (userDim.w/2);
         userDim.currY = (canvasDims.h) - (userDim.h);
         canvasContext.drawImage(img, userDim.currX, userDim.currY, userDim.w, userDim.h);
     }
@@ -220,7 +244,7 @@
     let start = () => {
         recordEvent("Started Game At", Date.now());
         instruction = "Started at " + Date.now();
-        setInterval(interval, 1000);
+        intervalID = setInterval(interval, 1000);
         document.getElementById("game").removeAttribute("hidden");
         document.getElementById("startButton").remove();
     }
