@@ -49,6 +49,7 @@
     let rotWhlRight = () => {
         console.log("Turning Wheel Right...");
         props.dashboardValues.wheelRotation += 3;
+        console.log(props.dashboardValues.wheelRotation);
     };
 
     let rotWhlLeft = () => {
@@ -114,6 +115,7 @@
     }
 
     .game-container {
+        z-index: 10;
         display: grid;
         grid-row: gameRow-start / gameRow-end instuctionRow-start;
         border: 7px solid lightgreen;
