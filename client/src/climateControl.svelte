@@ -6,25 +6,26 @@
 
 <style>
     svg {
-        height: 100%;
-        width: 100%;
-        display:block;
-        margin:auto;
+        height: 298%;
+        width: 298%;
+        position:absolute;
+        left: -7%;
+        top: -45%;
     }
 
     .myDiv {
-        display: flex;
+        /* display: flex;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
-        height: 100%;
-        margin:auto;
+        flex-direction: column; */
+        height: 250%;
+        width: 250%;
     }
 </style>
 
 <div class="myDiv">
     {#if cC.status == 'on'}
-        <svg viewBox="-250 25 750 200">
+        <svg viewBox="100 0 410 410">
             xmlns:dc="http://purl.org/dc/elements/1.1/"
             xmlns:cc="http://creativecommons.org/ns#"
             xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
