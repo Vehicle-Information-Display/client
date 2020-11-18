@@ -1,4 +1,5 @@
 <script>
+	import Volume from "./volumeSlider.svelte";
     export let mC = {
         status: "on",
     };
@@ -46,7 +47,7 @@
     <div class="buttonArea">
 		<!-- --------------------------------------------------------------- -->
 		<div class = "volume">
-			PUT THE VOLUME CODE HERE
+			<Volume />
 		</div>
 		<!-- --------------------------------------------------------------- -->
         <div class="back">
