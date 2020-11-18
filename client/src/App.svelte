@@ -1,9 +1,9 @@
 <script>
-	// Imports
+	// --[ Imports ]--
 	import SimpleDash from './SimpleDash.svelte';
 	import MiniGame from './MiniGame.svelte';
 
-	// App Props
+	// --[ App Props ]--
 	let props = {
 		"name": "Simple Dashboard",
 		"dashboardValues": {
@@ -12,6 +12,27 @@
 		}
 	}
 
+	// --[ Global Simulation Setup ]--
+
+	// A function to handle messages thrown by the simulation
+	let messageCallback = (message) => {
+		console.log("Received a message: " + message);
+	}
+
+	// Global Tick Count (Used for "global time")
+	let globalTick = 0;
+
+	// Tick function to be called every 500 milliseconds
+	// All time-dependent calls should be registered here
+	let tick = () => {
+		console.log("Tick");
+		globalTick++;	 // Increment Tick Counter
+	}
+
+	// Call tick every 500 milliseconds
+	setInterval(tick, 500);
+
+	// --[ Dashboard Tests ]--
 	let incSpd = () => {
 		console.log("Incrementing speed...");
 		props.dashboardValues.speed += 1;
