@@ -1,8 +1,17 @@
 <script>
 	// --[ Imports ]--
-	import {simulationData, simulationTick, simulationSendMessage, simulationRegisterMessageToApp} from "./simulation";
+	import {
+		simulationDataStore,
+		simulationScenarioStore,
+		simulationTick,
+		simulationSendMessage,
+		simulationRegisterMessageToApp,
+	} from "./simulation";
 	import SimpleDash from './SimpleDash.svelte';
 	import MiniGame from './MiniGame.svelte';
+
+	// --[ Scenario Imports ]--
+	import { testScenario } from './scenarios/testScenario';
 
 	// --[ App Props ]--
 	let props = {
@@ -12,10 +21,15 @@
 
 	// --[ Global Simulation Setup ]--
 
+	// Define the scenario to use within the simulation
+	simulationScenarioStore.update((sc) => {
+		return testScenario;
+	});
+
 	// Register a callback function to handle messages thrown by the simulation
 	simulationRegisterMessageToApp((messageToApp) => {
-		console.log("[DEBUG] Received a message from the simulation!");
-		console.log(messageToApp);
+		console.debug("[DEBUG] Received a message from the simulation!");
+		console.debug(messageToApp);
 	});
 
 	// Global Tick Count (Used for "global time")
@@ -28,7 +42,7 @@
 		simulationTick(globalTickCount);
 
 		// Increment tick counter
-		globalTick++;
+		globalTickCount++;
 	}
 
 	// Call tick every 500 milliseconds
@@ -37,13 +51,13 @@
 	// --[ Dashboard Tests ]--
 
 	// Update properties when simulationData updates
-	const unsubscribe = simulationData.subscribe(data => {
+	const unsubscribe = simulationDataStore.subscribe(data => {
 		props.dashboardData = data;
 	});
 
 	// Increment the speed
 	let incSpd = () => {
-		console.log("[DEBUG] Incrementing speed..." + props.dashboardValues.speed);
+		console.debug("[DEBUG] Incrementing speed..." + props.dashboardData.speed);
 		// props.dashboardValues.speed += 1;
 		let message = {
 			"timestamp" : Date(),
@@ -53,7 +67,7 @@
 			"tags" : ["simulation_status_change"],
 			"payload" : {
 				"instruction": "setSpeed",
-				"value": parseInt(props.dashboardValues.speed) + 1,
+				"value": parseInt(props.dashboardData.speed) + 1,
 			}
 		}
 
@@ -62,7 +76,7 @@
 	}
 
 	let incRPM = () => {
-		console.log("[DEBUG] Incrementing RPM...");
+		console.debug("[DEBUG] Incrementing RPM...");
 		// props.dashboardValues.rpm += 1000;
 		let message = {
 			"timestamp" : Date(),
@@ -72,7 +86,7 @@
 			"tags" : ["simulation_status_change"],
 			"payload" : {
 				"instruction": "setRPM",
-				"value": parseInt(props.dashboardValues.rpm) + 1,
+				"value": parseInt(props.dashboardData.rpm) + 1,
 			}
 		}
 

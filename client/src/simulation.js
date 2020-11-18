@@ -2,7 +2,7 @@
 import { writable } from 'svelte/store';
 
 // --[ Simulation Core Data Storage ]--
-let simulationData = writable({
+let simulationDataStore = writable({
     "speed": "10",               // Measured in miles per hour
     "engineRPM": "1000",           // Measured in revolutions per second
     "fuelLevelPercent": "100",  // Measured in percentage of a full tank
@@ -32,6 +32,15 @@ let simulationData = writable({
     }
 });
 
+// The scenario store that allows the scenario to be passed between components
+let simulationScenarioStore = writable({});
+
+// The local simulation store subscriber object that contains the up-to-date simulation scenario to use
+let simulationScenario = {};
+const unsubscribe = simulationScenarioStore.subscribe(scenario => {
+    simulationScenario = scenario;
+});
+
 // --[ Simulation Core Interface ]--
 
 // Function to allow passing messages from the simulation to the app
@@ -42,19 +51,22 @@ let simulationRegisterMessageToApp = function (callback) {
 
 // Simulation tick function that is called regularly by the app timer
 let simulationTick = function(globalTickTime) {
-    // console.log("[DEBUG] Global Tick Time: " + globalTickTime);
+
+    // Check if an instruction is scheduled to run at the current time
+    if (simulationScenario.has(globalTickTime)) {
+        const instructionWrapper = simulationScenario.get(globalTickTime);
+        handleInstruction(instructionWrapper.instruction, instructionWrapper.value);
+    }
 }
 
 // High-level function to pass messages to the simulation
 let simulationSendMessage = function (message) {
-    console.log("[DEBUG] Simulation Received Message");
-    console.log(message)
     switch (message.category) {
         case "simulation_instruction":
             handleInstruction(message.payload.instruction, message.payload.value);
             break;
         default:
-            console.log("[WARNING] Unknown message received by simulation! Discarding...");
+            console.debug("[WARNING] Unknown message received by simulation! Discarding...");
             break;
     }
 }
@@ -65,25 +77,17 @@ let simulationSendMessage = function (message) {
 let handleInstruction = function (instruction, value) {
     switch (instruction) {
         case "setSpeed":
-            console.log("[DEBUG] Received setSpeed instruction for: " + value);
-            simulationData.update((sd) => {
+            console.debug("[DEBUG] Received setSpeed instruction for: " + value);
+            simulationDataStore.update((sd) => {
                 sd.speed = parseInt(value);
                 return sd;
             });
             break;
         default:
-            // console.log("[ERROR] Simulation received undocumented or invalid instruction!");
-            throw new Error("Simulation received undocumented or invalid instruction!")
+            console.debug("[ERROR] Simulation received undocumented or invalid instruction!");
             break;
     }
 }
 
-// --[ Simulation Predefined Instructions ]--
-
-// List of instructions to execute within the simulation
-let instructions = [
-    {"time": "0", "instruction": "speed", "value": "55"},
-]
-
 // --[ Exports ]--
-export { simulationData, simulationTick, simulationSendMessage, simulationRegisterMessageToApp };
+export { simulationDataStore, simulationScenarioStore, simulationTick, simulationSendMessage, simulationRegisterMessageToApp };
