@@ -11,13 +11,15 @@
     import SteeringWheel from "./SteeringWheel.svelte";
     import SeatWC from "./SeatWarmer.svelte";
     import Outer from "./Outer.svelte";
+    import FuelTape from './FuelTape.svelte';
 
     export let values = {
         speed: 0,
         rpm: 0,
         wheelRotation: 0,
         seatWarmerLeft: "cool",
-        seatWarmerRight: "cool"
+        seatWarmerRight: "cool",
+        hazardLights: false,
     };
 
     let speedometerProps = {};
@@ -27,8 +29,8 @@
     let wheelRotation = {};
     let seatWarmerLeft = {};
     let seatWarmerRight = {};
+    let hazardLights = {};
 
-    let hazardLights = { status: "on" };
     let tackySun = { status: "on" };
     let climateControl = { status: "on" };
     let cogWheel = { status: "on" };
@@ -39,10 +41,10 @@
         value: values.speed / 2,
     };
 
-    // $:tachometerProps = {
-    //     "name": "Tachometer",
-    //     "value": values.rpm / 200
-    // }
+    $:tachometerProps = {
+        "name": "Tachometer",
+        "value": values.rpm / 200
+    }
 
     // $: rpmProps = {
     //     name: "Tachometer",
@@ -62,6 +64,10 @@
     $: seatWarmerRight = {
         name: "seatWarmerRight",
         status: values.seatWarmerRight,
+    };
+
+    $: hazardLights = {
+        status: values.hazardLights,
     };
 
     function handleMessage(event) {
@@ -96,11 +102,12 @@
 
     /* wheel screen element */
     .symbols-container {
+        z-index: 1;
         word-wrap: break-word;
         grid-area: symbols;
-        border: solid black;
-        border-radius: 10px;
-        background-color: white;
+        /* border: solid black;
+        border-radius: 10px; */
+        background-color: black;
         position: relative;
     }
 
@@ -139,7 +146,7 @@
         text-align: center;
         display: grid;
         grid-area: screen;
-        grid-template-columns: 25% 5% 35% 35%;
+        grid-template-columns: 24% 6% 35% 35%;
         grid-template-rows: 13% 22% 32.5% 32.5%;
         grid-template-areas:
             "textAlert textAlert textAlert textAlert"
@@ -151,6 +158,7 @@
 
     /* wheel area element */
     .wheel-container {
+        z-index:2;
         grid-area: wheel;
         text-align: center;
         /* border: solid black;
@@ -193,6 +201,7 @@
     .mySettings-container {
         grid-area: mySettings;
         background-color: black;
+        border-top-left-radius: 25px;
         position: relative;
         text-align: center;
         padding-left: 20px;
@@ -220,21 +229,30 @@
     /* options.info element */
     .myTemperature-container {
         grid-area: myTemperature;
+        border-top-right-radius: 25px;
         background-color: black;
         position: relative;
         text-align: center;
         /* border-radius: 25px; */
     }
 
+    /* options.info element */
+    .hazards-container {
+        grid-area: hazards;
+        background-color: black;
+    }
+
     /* all dash element */
     .optionsInfo-container {
         text-align: center;
         display: grid;
+        /* border: solid blue
+        border-radius: 25px; */
         grid-area: optionsInfo;
         grid-auto-flow: column;
-        grid-template-columns: 20% 60% 10% 10%;
+        grid-template-columns: 20% 10% 55% 8% 7%;
         grid-template-rows: 100%;
-        grid-template-areas: "mySettings myTime myWeather myTemperature";
+        grid-template-areas: "mySettings hazards myTime myWeather myTemperature";
     }
 
     /* all dash element */
@@ -269,7 +287,7 @@
     .music-container {
         display: grid;
         grid-area: music;
-        border: solid black;
+        /* border: solid black; */
         border-radius: 25px;
         /* background-color: white; */
         position: relative;
@@ -319,13 +337,17 @@
     .gap-container {
         grid-area: gap;
         background-color: darkslategray;
-        border-right: solid black;
+        /* border-top: solid black; */
         /* border-color: darkslategray; */
         /* border-radius: 25px; */
     }
 
     .entertainment-container {
+        z-index: 10;
         text-align: center;
+        border: 4px solid silver;
+        background-color: black;
+        border-radius: 25px;
         grid-area: entertainment;
         display: grid;
         grid-template-columns: 35% 35% 30%;
@@ -340,7 +362,7 @@
     .allDash-container {
         text-align: center;
         display: grid;
-        grid-template-columns: 35% 20% 45%;
+        grid-template-columns: 35.5% 19.5% 45%;
         grid-template-rows: auto;
         grid-template-areas:
             "wheelArea gap entertainment"
@@ -362,9 +384,11 @@
             <div class="textAlert-container">ALERT</div>
             <div class="rpm-container">
                 <fontSize>RPM</fontSize>
-                <SimpleGauge bind:props={speedometerProps} />
+                <SimpleGauge bind:props={tachometerProps}/>
             </div>
-            <div class="symbols-container"><br /><br /> SYMBOL</div>
+            <div class="symbols-container">
+                <FuelTape />
+            </div>
             <div class="mph-container">
                 <svg
                     width="100%"
@@ -427,11 +451,11 @@
     </div>
     <div class="entertainment-container">
         <div class="optionsInfo-container">
-            <!-- <fontSize>Options/Info</fontSize> -->
-            <!-- <HazardLights bind:hL={hazardLights} />
-        <TackySun bind:tS={tackySun} /> -->
             <div class="mySettings-container">
                 <CogWheel bind:cW={cogWheel} />
+            </div>
+            <div class="hazards-container">
+                <HazardLights bind:hL={hazardLights} />
             </div>
             <div class="myTime-container">
                 <!-- <p style="color:white">Time</p> -->

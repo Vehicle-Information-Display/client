@@ -9,11 +9,11 @@
             document.getElementById("instr2").style.display = "none";
             document.getElementById("instr3").style.display = "none";
             document.addEventListener("keydown", function(event1) {
-                if (document.getElementById("instr1").style.display == "block") {
-                    if(event1.keyCode == 65 || event1.keyCode == 37){
-                        console.log(document.getElementById("instr1").innerHTML);
-                        console.log("Pressed A");
-                    }
+                if (event1.keyCode == 65) {
+                    console.log("Pressed A");
+                }
+                else {
+                    console.log("Didn't Press A");
                 }
             });
         }
@@ -21,27 +21,17 @@
             document.getElementById("instr1").style.display = "none";
             document.getElementById("instr2").style.display = "block";
             document.getElementById("instr3").style.display = "none";
-            document.addEventListener("keydown", function(event1) {
-                if (document.getElementById("instr2").style.display == "block") {
-                    if(event1.keyCode == 68 || event1.keyCode == 39){
-                        console.log(document.getElementById("instr2").innerHTML);
-                        console.log("Pressed D");
-                    }
-                }
-            });
+            setTimeout(function(){
+                alert("Press D");
+            }, 250);
         }
         if (event.keyCode == 51) { //SLOW DOWN
             document.getElementById("instr1").style.display = "none";
             document.getElementById("instr2").style.display = "none";
             document.getElementById("instr3").style.display = "block";
-            document.addEventListener("keydown", function(event1) {
-                if (document.getElementById("instr3").style.display == "block") {
-                    if(event1.keyCode == 83 || event1.keyCode == 40){
-                        console.log(document.getElementById("instr3").innerHTML);
-                        console.log("Pressed S");
-                    }
-                }
-            });
+            setTimeout(function(){
+                alert("Press S");
+            }, 250);
         }
     });
 
@@ -55,7 +45,6 @@
 
     fontSize {
         font-size: 3vh;
-        
     }
 </style>
 

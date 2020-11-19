@@ -20,8 +20,9 @@
             speed: 0,
             rpm: 0,
             wheelRotation: 0,
-            seatWarmerLeft: "warm",
-            seatWarmerRight: "cool",
+            seatWarmerLeft: "off",
+            seatWarmerRight: "off",
+            hazardLights: false,
         },
     };
 
@@ -48,6 +49,7 @@
     let rotWhlRight = () => {
         console.log("Turning Wheel Right...");
         props.dashboardValues.wheelRotation += 3;
+        console.log(props.dashboardValues.wheelRotation);
     };
 
     let rotWhlLeft = () => {
@@ -58,19 +60,45 @@
 
     let changeSeatWarmerLeft = () => {
         if (props.dashboardValues.seatWarmerLeft == "warm") {
-            props.dashboardValues.seatWarmerLeft = "cool";
-        } else {
+            props.dashboardValues.seatWarmerLeft = "off";
+            console.log("Left Seat Changed from warm to cool");
+        } else if (props.dashboardValues.seatWarmerLeft == "cool") {
             props.dashboardValues.seatWarmerLeft = "warm";
+            console.log("Left Seat Changed from cool to warm");
+        } else {
+            props.dashboardValues.seatWarmerLeft = "cool";
+            console.log("Left Seat Changed from off to cool");
         }
     };
 
     let changeSeatWarmerRight = () => {
         if (props.dashboardValues.seatWarmerRight == "warm") {
-            props.dashboardValues.seatWarmerRight = "cool";
-        } else {
+            props.dashboardValues.seatWarmerRight = "off";
+            console.log("Right Seat Changed from warm to cool");
+        } else if (props.dashboardValues.seatWarmerRight == "cool") {
             props.dashboardValues.seatWarmerRight = "warm";
+            console.log("Right Seat Changed from cool to warm");
+        } else {
+            props.dashboardValues.seatWarmerRight = "cool";
+            console.log("Right Seat Changed from off to cool");
         }
     };
+
+    let changeHazardLightStatus = () => {
+        if(props.dashboardValues.hazardLights == false){
+            props.dashboardValues.hazardLights = true;
+        } else{
+            props.dashboardValues.hazardLights = false
+        }
+    }
+
+    // let changeSeatWarmerLeft = () => {
+    //     if (props.dashboardValues.seatWarmerLeft == "warm") {
+    //         props.dashboardValues.seatWarmerLeft = "cool";
+    //     } else {
+    //         props.dashboardValues.seatWarmerLeft = "warm";
+    //     }
+    // };
 
     function handleMessage(event) {
         alert(event.detail.text);
@@ -94,11 +122,16 @@
     }
 
     .game-container {
+        z-index: 10;
         display: grid;
         grid-row: gameRow-start / gameRow-end instuctionRow-start;
         border: 7px solid lightgreen;
         border-radius: 25px;
         position: relative;
+        grid-template-areas: 
+            "video video video video"
+            "testButtons testButtons testButtons testButtons"
+            "testButtons testButtons testButtons testButtons";
     }
 
     .instruction-container {
@@ -113,10 +146,19 @@
     .dashArea-container {
         display: grid;
         grid-row: instructionRow-end dash-start / dash-end;
-        border: 7px solid black;
+        border: solid black;
         border-radius: 25px;
-        background-color: black;
+        background-color: darkslategray;
         position: relative;
+    }
+
+    .testButtons-container {
+        grid-area: testButtons;
+        justify-self: center;
+    }
+
+    .video-container{
+        grid-area: video;
     }
 
     h1 {
@@ -145,13 +187,21 @@
     <button on:click={decRPM}>Decrement RPM</button> -->
 
     <div class="game-container">
-        <Game bind:Game={game} />
-        <button on:click={rotWhlRight}>Turn Wheel Right</button>
-        <button on:click={rotWhlLeft}>Turn Wheel Left</button>
-        <button on:click={incSpd}>Increment Speed</button>
-        <button on:click={decSpd}>Decrement Speed</button>
-        <button on:click={changeSeatWarmerLeft}>Left Seat Change</button>
-        <button on:click={changeSeatWarmerRight}>Right Seat Change</button>
+        <div class="video-container">
+            <Game bind:Game={game} />
+        </div>
+        <div class="testButtons-container">
+            <button on:click={rotWhlLeft}>Turn Wheel Left</button>
+            <button on:click={rotWhlRight}>Turn Wheel Right</button>
+            <br>
+            <button on:click={incRPM}>Increment RPM</button>
+            <button on:click={decRPM}>Decrement RPM</button>
+            <br>
+            <button on:click={changeSeatWarmerLeft}>Left Seat Change</button>
+            <button on:click={changeSeatWarmerRight}>Right Seat Change</button>
+            <br>
+            <button on:click={changeHazardLightStatus}>Hazard Lights</button>
+        </div>
     </div>
 
     <div class="instruction-container">

@@ -10,6 +10,7 @@
         width: 100%;
         display: block;
         margin: auto;
+        /* border:solid white; */
     }
 </style>
 
@@ -23,7 +24,7 @@
             xmlns:xlink="http://www.w3.org/1999/xlink"
             x="0px"
             y="0px"
-            viewBox="0 0 1000 1000"
+            viewBox="-20 -60 900 900"
             style="enable-background:new 0 0 310.551 310.551;"
             xml:space="preserve">
             <g>
