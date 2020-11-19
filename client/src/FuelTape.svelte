@@ -4,18 +4,18 @@
 
 <style>
     svg {
-        height: 20%;
-        width: 95%;
-        transform: scale(5);
-        /* border:solid black; */
-        position:absolute;
-        left: 4px;
-        top: 76px;
+        margin: auto;
+    }
+
+    .fuel-tape-wrapper {
+        display: flex;
+        width: 100%;
+        height: 100%;
     }
 </style>
 
-<div class="image-wrapper">
-    <svg
+<div class="fuel-tape-wrapper">
+    <svg viewBox="20 -5 75 295">
         xmlns:dc="http://purl.org/dc/elements/1.1/"
         xmlns:cc="http://creativecommons.org/ns#"
         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -26,7 +26,7 @@
         xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
         width="210mm"
         height="297mm"
-        viewBox="-46 -10 210 297"
+<!--        viewBox="-46 -10 210 297"-->
         version="1.1"
         id="svg8"
         inkscape:version="1.0.1 (c497b03c, 2020-09-10)"
