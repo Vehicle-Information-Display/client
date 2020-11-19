@@ -88,7 +88,6 @@
         border-top-left-radius: 150px;
         border-top-right-radius: 150px;
         background-color: white;
-        position: relative;
     }
 
     /* wheel screen element */
@@ -97,18 +96,18 @@
         border: solid black;
         border-bottom-left-radius: 25px;
         background-color: white;
-        position: relative;
     }
 
     /* wheel screen element */
     .symbols-container {
         z-index: 1;
+        height: 100%;
+        width: 100%;
         word-wrap: break-word;
         grid-area: symbols;
         /* border: solid black;
         border-radius: 10px; */
         background-color: black;
-        position: relative;
     }
 
     /* wheel screen element */
@@ -117,7 +116,6 @@
         border: solid black;
         border-radius: 10px;
         background-color: white;
-        position: relative;
     }
 
     /* wheel screen element */
@@ -126,7 +124,6 @@
         border: solid black;
         border-radius: 10px;
         background-color: white;
-        position: relative;
     }
 
     /* wheel screen element */
@@ -135,7 +132,6 @@
         border: solid black;
         border-bottom-right-radius: 25px;
         background-color: white;
-        position: relative;
     }
 
     /* wheel area element */
@@ -153,7 +149,9 @@
             "rpm symbols mph dNav"
             "rpm symbols sitAware dNav"
             "rpm symbols sitAware dNav";
-        position: relative;
+        margin: auto;
+        width: 95%;
+        height: auto;
     }
 
     /* wheel area element */
@@ -187,14 +185,8 @@
     .wheelArea-container {
         /* border: solid black; */
         border-radius: 25px;
-        display: grid;
-        grid-area: wheelArea;
-        grid-template-columns: 13% 60% 10% 10% 7%;
-        grid-template-rows: 28% 34% 38%;
-        grid-template-areas:
-            "blank1 wheel wheel wheel blank2"
-            "blank1 screen screen screen blank2"
-            "blank1 empty empty empty blank2";
+        display: flex;
+        flex-direction: column;
     }
 
     /* options.info element */
@@ -202,7 +194,6 @@
         grid-area: mySettings;
         background-color: black;
         border-top-left-radius: 25px;
-        position: relative;
         text-align: center;
         padding-left: 20px;
         /* border-radius: 25px; */
@@ -212,7 +203,6 @@
     .myTime-container {
         grid-area: myTime;
         background-color: black;
-        position: relative;
         text-align: center;
         /* border-radius: 25px; */
     }
@@ -222,7 +212,6 @@
         grid-area: myWeather;
         background-color: black;
         text-align: center;
-        position: relative;
         /* border-radius: 25px; */
     }
 
@@ -231,7 +220,6 @@
         grid-area: myTemperature;
         border-top-right-radius: 25px;
         background-color: black;
-        position: relative;
         text-align: center;
         /* border-radius: 25px; */
     }
@@ -261,7 +249,6 @@
         border: solid black;
         border-radius: 25px;
         background-color: white;
-        position: relative;
     }
 
     .musicButtons-container {
@@ -290,7 +277,6 @@
         /* border: solid black; */
         border-radius: 25px;
         /* background-color: white; */
-        position: relative;
         grid-template-columns: 20% 20% 20% 20% 20%;
         grid-template-rows: 38% 38% 24%;
         grid-template-areas:
@@ -317,7 +303,6 @@
         border-radius: 25px;
         border: solid black;
         background-color: white;
-        position: relative;
         text-align: center;
     }
 
@@ -331,7 +316,6 @@
         grid-template-columns: 33% 34% 33%;
         grid-template-rows: 100%;
         grid-template-areas: "leftSeat climateChange rightSeat";
-        position: relative;
     }
 
     .gap-container {
@@ -364,22 +348,12 @@
         display: grid;
         grid-template-columns: 35.5% 19.5% 45%;
         grid-template-rows: auto;
-        grid-template-areas:
-            "wheelArea gap entertainment"
-            "wheelArea gap entertainment"
-            "wheelArea gap entertainment"
-            "wheelArea gap entertainment";
+        grid-template-areas: "wheelArea gap entertainment";
     }
 </style>
 
 <div class="allDash-container">
     <div class="wheelArea-container">
-        <div class="wheel-container">
-            <SteeringWheel bind:sW={wheelRotation} />
-        </div>
-        <div class="empty-container" />
-        <div class="blankSpace1-container" />
-        <div class="blankSpace2-container" />
         <div class="behindWheelScreen-container">
             <div class="textAlert-container">ALERT</div>
             <div class="rpm-container">
@@ -447,6 +421,9 @@
             <div class="dNav-container">
                 <fontSize>NAV</fontSize>
             </div>
+        </div>
+        <div class="wheel-container">
+            <SteeringWheel bind:sW={wheelRotation} />
         </div>
     </div>
     <div class="entertainment-container">
