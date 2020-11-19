@@ -6,15 +6,21 @@
 </script>
 
 <style>
+    .seat-warmer-wrapper {
+        display: flex;
+        height: 100%;
+        width: 100%;
+    }
+
     svg {
         z-index: 1;
-        height: 60%;
-        width: 60%;
-        padding-bottom: 40px;
+        margin: auto;
+        height: 100%;
+        width: 100%;
     }
 </style>
 
-<div class="image-wrapper">
+<div class="seat-warmer-wrapper">
     {#if seatWC.status == 'warm'}
         <svg
             xmlns:dc="http://purl.org/dc/elements/1.1/"
