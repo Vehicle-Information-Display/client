@@ -156,7 +156,7 @@
 
     /* wheel area element */
     .wheel-container {
-        z-index:2;
+        z-index: 100;  /* Wheel should be in front of everything */
         grid-area: wheel;
         text-align: center;
         /* border: solid black;
