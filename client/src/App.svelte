@@ -159,27 +159,24 @@
         /* text-align: center;
         padding: 1em; */
         width: auto;
-        height: auto;
+        height: 100%;
         margin: 0 auto;
         /* border: 7px solid black; */
-        display: grid;
-        grid-template-columns: auto;
-        grid-template-rows: [gameRow-start] 45vh [gameRow-end instructionRow-start] 5vh [instructionRow-end dash-start] 50vh [dash-end];
+        display: flex;
+        flex-direction: column-reverse;
         border-radius: 35px;
         overflow: hidden;
     }
 
     .game-container {
-        z-index: 10;
-        display: grid;
-        grid-row: gameRow-start / gameRow-end instuctionRow-start;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
         border: 7px solid lightgreen;
         border-radius: 25px;
-        position: relative;
-        grid-template-areas:
-            "video video video video"
-            "testButtons testButtons testButtons testButtons"
-            "testButtons testButtons testButtons testButtons";
     }
 
     .instruction-container {
@@ -197,7 +194,6 @@
         border: solid black;
         border-radius: 25px;
         background-color: darkslategray;
-        position: relative;
     }
 
     .testButtons-container {
@@ -226,36 +222,28 @@
 </style>
 
 <main>
-	<h1>Now Testing: {props.name}</h1>
-	<button on:click={incSpd}>Increment Speed</button>
-	<button on:click={incRPM}>Increment RPM</button>
-	<SimpleDash bind:values={props.dashboardData}/>
-	<MiniGame />
-
-    <div class="game-container">
-        <div class="video-container">
-            <Game bind:Game={game} />
-        </div>
-        <div class="testButtons-container">
-            <button on:click={rotWhlLeft}>Turn Wheel Left</button>
-            <button on:click={rotWhlRight}>Turn Wheel Right</button>
-            <br>
-            <button on:click={incRPM}>Increment RPM</button>
-            <button on:click={incSpd()}>Increment Speed</button>
-            <br>
-            <button on:click={changeSeatWarmerLeft}>Left Seat Change</button>
-            <button on:click={changeSeatWarmerRight}>Right Seat Change</button>
-            <br>
-            <button on:click={changeHazardLightStatus}>Hazard Lights</button>
-        </div>
-    </div>
-
-    <div class="instruction-container">
-        <Instruction bind:Instruction={instruction} />
-    </div>
     <div class="dashArea-container">
         <SimpleDash bind:values={props.dashboardValues} />
     </div>
+    <div class="game-container">
+        <MiniGame />
+<!--        <div class="testButtons-container">-->
+<!--            <button on:click={rotWhlLeft}>Turn Wheel Left</button>-->
+<!--            <button on:click={rotWhlRight}>Turn Wheel Right</button>-->
+<!--            <br>-->
+<!--            <button on:click={incRPM}>Increment RPM</button>-->
+<!--            <button on:click={incSpd()}>Increment Speed</button>-->
+<!--            <br>-->
+<!--            <button on:click={changeSeatWarmerLeft}>Left Seat Change</button>-->
+<!--            <button on:click={changeSeatWarmerRight}>Right Seat Change</button>-->
+<!--            <br>-->
+<!--            <button on:click={changeHazardLightStatus}>Hazard Lights</button>-->
+<!--        </div>-->
+    </div>
+
+<!--    <div class="instruction-container">-->
+<!--        <Instruction bind:Instruction={instruction} />-->
+<!--    </div>-->
     <!-- <div class="message-container"> -->
     <!-- <Outer on:message={handleMessage}/> -->
     <!-- </div> -->
