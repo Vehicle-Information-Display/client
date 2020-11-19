@@ -425,15 +425,9 @@
                     xml:space="preserve"
                     id="text160"
                     style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect162);fill:#00ffff;fill-opacity:1;stroke:none;"
-<<<<<<< HEAD
-                    transform="matrix(1.695252,0,0,2.7920293,-25.76081,-335.96342)">
-                    <tspan x="38.632812" y="196.175">
-                        <tspan style="font-weight:bold">COOL</tspan>
-=======
                     transform="matrix(0.97874827,0,0,1.6602213,13.6404,-117.52944)">
                     <tspan x="38.632812" y="196.175">
                         <tspan style="font-weight:normal">COOL</tspan>
->>>>>>> 7cc38326f02bf70116078675bafefbb0a1813828
                     </tspan>
                 </text>
                 <text
@@ -448,8 +442,6 @@
                         </tspan>
                     </tspan>
                 </text>
-<<<<<<< HEAD
-=======
                 <rect
                     style="fill:#333333;stroke-width:0.19541"
                     id="rect126-3"
@@ -472,7 +464,6 @@
                     xml:space="preserve"
                     id="text101"
                     style="fill:black;fill-opacity:1;line-height:1.25;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:10.58333333px;white-space:pre;shape-inside:url(#rect103);" />
->>>>>>> 7cc38326f02bf70116078675bafefbb0a1813828
             </g>
         </svg>
     {/if}
