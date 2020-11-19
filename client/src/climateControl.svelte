@@ -6,26 +6,19 @@
 
 <style>
     svg {
-        height: 298%;
-        width: 298%;
-        position:absolute;
-        left: -7%;
-        top: -45%;
+        margin: 0 auto;
     }
 
-    .myDiv {
-        /* display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column; */
-        height: 250%;
-        width: 250%;
+    .climate-control-wrapper {
+        display: flex;
+        height: 100%;
+        width: 100%;
     }
 </style>
 
-<div class="myDiv">
+<div class="climate-control-wrapper">
     {#if cC.status == 'on'}
-        <svg viewBox="100 0 410 410">
+        <svg viewBox="0 0 210 250">
             xmlns:dc="http://purl.org/dc/elements/1.1/"
             xmlns:cc="http://creativecommons.org/ns#"
             xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -33,9 +26,9 @@
             xmlns="http://www.w3.org/2000/svg"
             xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
             xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-            width="210mm"
-            height="297mm"
-            viewBox="0 0 210 297"
+<!--            width="210mm"-->
+<!--            height="297mm"-->
+<!--            viewBox="0 0 210 297"-->
             version="1.1"
             id="svg8"
             inkscape:version="1.0.1 (c497b03c, 2020-09-10)"
