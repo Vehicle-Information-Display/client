@@ -1,0 +1,98 @@
+<script>
+    const key = 'ba5e02e34a3782238a9aa8671d87fa34';
+if(key=='') document.getElementById('temp').innerHTML = ('Remember to add your api key!');
+
+function weatherBalloon( cityID ) {
+	fetch('https://api.openweathermap.org/data/2.5/weather?id=' + cityID+ '&appid=' + key)  
+	.then(function(resp) { return resp.json() }) // Convert data to json
+	.then(function(data) {
+		drawWeather(data);
+	})
+	.catch(function() {
+		// catch any errors
+	});
+}
+function drawWeather( d ) {
+  var celcius = Math.round(parseFloat(d.main.temp)-273.15);
+	var fahrenheit = Math.round(((parseFloat(d.main.temp)-273.15)*1.8)+32);
+  var description = d.weather[0].description; 
+	
+	//document.getElementById('description').innerHTML = description;
+	document.getElementById('temp').innerHTML = fahrenheit + '&deg;';
+	//document.getElementById('location').innerHTML = d.name;
+  
+  if( description.indexOf('rain') > 0 ) {
+  	document.body.className = 'rainy';
+  } else if( description.indexOf('cloud') > 0 ) {
+  	document.body.className = 'cloudy';
+  } else if( description.indexOf('sunny') > 0 ) {
+  	document.body.className = 'sunny';
+  } else {
+  	document.body.className = 'clear';
+  }
+}
+window.onload = function() {
+	weatherBalloon( 5372259 );
+}
+</script>
+
+<style>
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: .1em .1em 0 rgba(0,0,0,0.3);
+    height: 100vh;
+    background-image: linear-gradient(to right top, #99bbcb, #a5c7d7, #b1d4e2, #bde0ee, #c9edfa);
+}
+h1 {
+    margin: 0 auto;
+    text-align: center;
+    color: #fff;
+    font-size: 1em;
+}
+
+.inner-wrapper {
+  display: table;
+  position:absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.header-wrapper {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  position:relative;
+}
+
+div {
+  margin:auto;
+  width:100%;
+  height:100%;
+  position:absolute;
+}
+body.sunny {
+    background-image: linear-gradient(to right top, #ff4e50, #ff713e, #ff932b, #ffb41d, #f9d423);
+}
+body.cloudy {
+    background-image: linear-gradient(to right top, #63747c, #71858e, #7f96a0, #8da8b2, #9bbac5);
+}
+body.rainy {
+    background-image: linear-gradient(to right top, #637c7b, #718e8c, #7ea09e, #8db2b0, #9bc5c3);
+}
+</style>
+
+
+<div>
+  <div class="inner-wrapper">
+    <div class="header-wrapper">
+      <h1 id="temp"></h1>
+    </div>
+  </div>
+</div>
+<!-- Documentation: https://bithacker.dev/fetch-weather-openweathermap-api-javascript -->
+

@@ -1,5 +1,5 @@
 <script>
-    export let props = {
+    export let halfProps = {
         "name": "Unknown",
         "value": 0
     }
@@ -11,8 +11,8 @@
     }
 
     svg {
-        height: 50%;
-        width: 50%;
+        height: 100%;
+        width: 100%;
     }
 
     .gauge-wrapper {
@@ -49,12 +49,12 @@
     }
 </style>
 
-<div class="gauge-wrapper">
-    <svg viewBox='-50 -50 100 100'>
+<div class="halfGauge-wrapper">
+    <svg viewBox='-50 -50 50 100'>
         <circle class='gauge-face' r='48'/>
 
         <!-- Marker Ticks -->
-        {#each [5, 10, 15, 20, 25, 30, 35, 40, 45, 50] as minute}
+        {#each [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50] as minute}
             <line
                     class='major'
                     y1='40'
@@ -73,12 +73,12 @@
         {/each}
 
         <!-- Needle -->
-        <g transform='rotate({6 * (props.value - 25)})'>
+        <g transform='rotate({6 * (halfProps.value - 25)})'>
             <line class='needle' y1='10' y2='-38'/>
             <line class='needle-counterweight' y1='10' y2='-20'/>
         </g>
 
         <circle r="5" class="center-pin"/>
     </svg>
-    <!-- <p>{props.name}</p> -->
+    <p>{halfProps.name}</p>
 </div>
