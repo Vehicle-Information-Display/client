@@ -2,15 +2,12 @@
     //when mounted then do stuff function
     import { onMount } from "svelte";
 
-    //instructions
-    let instruction = "Ready?"
-
     //canvas stuff for minigame
     let canvas; //the canvas object
     let canvasContext; //the canvas context object
     let canvasDims = { //canvas dimensions
-        w: 900, //width
-        h: 600 //height
+        w: 800, //width
+        h: 400 //height
     };
     let widthSpaces = 12; //12-1? spaces across the board to move //columns in objMiniGameSimulation
     let heightSpaces = 10 //10-1? spaces of objects of height same as userDim.h
@@ -243,20 +240,25 @@
 
     let start = () => {
         recordEvent("Started Game At", Date.now());
-        instruction = "Started at " + Date.now();
         intervalID = setInterval(interval, 1000);
         document.getElementById("game").removeAttribute("hidden");
         document.getElementById("startButton").remove();
     }
 </script>
 
-<div>
-    <br><br>
-    <!-- The instruction "bar" -->
-    <h3>{instruction}</h3>
+<style>
+    .minigame-container {
+        height: 100%;
+        width: 100%;
+        margin: auto;
+    }
+</style>
+
+<div class="minigame-container">
 
     <!-- Start the simulation button -->
-    <button on:click={start} id="startButton">Start the Simulation</button>
+    <!-- [FIXME] This should be removed in favor of an all-encompassing simulation start button -->
+    <button on:click={start} id="startButton">Start the MiniGame</button>
 
     <!-- img to be used as the main user in the simulation in the canvas -->
     <img on:load={drawIm} id="car" hidden src="img/car.png" width="0px" height="0px" alt="">
