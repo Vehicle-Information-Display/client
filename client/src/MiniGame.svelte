@@ -1,14 +1,17 @@
 <script>
     //when mounted then do stuff function
-    import { onMount } from "svelte";
+    import { onMount, createEventDispatcher } from "svelte";
+
+    // Create event dispatcher
+    const dispatch = createEventDispatcher();
 
     // Get properties (all) from parent component
     export let props = {}
 
     // Allow parent components to call this component's event handler
     export function handleMessage(message) {
-        // console.log("[DEBUG] MiniGame received an event");
-        console.log(message);
+        // console.log("Minigame received message: ");
+        // console.log(message);
 
         /* Handle Keydown event
          * [FIXME] Shouldn't be able to move while the simulation isn't going!
@@ -33,7 +36,17 @@
                 }
                 checkClashFromUser();
 
-                // [TODO] Emit message that the vehicle has moved to the right
+                // Emit message that the vehicle has moved to the right
+                dispatch('message', {
+                    "timestamp": Date.now(),
+                    "name": "vehicleright",
+                    "category": "minigameevent",
+                    "intendedTarget": "simulation",
+                    "tags": ["vehicleMotion"],
+                    "payload": {
+                        "direction": "right"
+                    }
+                });
             }
 
             else if (key === 'a') {
@@ -45,7 +58,17 @@
                 }
                 checkClashFromUser();
 
-                // [TODO] Emit message that the vehicle has moved to the right
+                // Emit message that the vehicle has moved to the left
+                dispatch('message', {
+                    "timestamp": Date.now(),
+                    "name": "vehicleleft",
+                    "category": "minigameevent",
+                    "intendedTarget": "simulation",
+                    "tags": ["vehicleMotion"],
+                    "payload": {
+                        "direction": "left"
+                    }
+                });
             }
         }
     }
@@ -99,12 +122,24 @@
     let score = 0; //score of the minigame //each time it is changed add it to the times array
 
     //record the time event and print it out
-    function recordEvent(eventN, time) {
+    function recordEvent(eventN, time, payload=null) {
         times.push({
             "Event Name": eventN,
             "Time": time
         });
         console.log(times[times.length-1]['Event Name'] + ": " + times[times.length-1]['Time']);
+
+        /* Emit message that the vehicle has moved to the left
+         * Note: This basically treats the recordEvent function as a wrapper/shim for message dispatching
+         */
+        dispatch('message', {
+            "timestamp": time,
+            "name": eventN,
+            "category": "minigameevent",
+            "intendedTarget": null,
+            "tags": [],
+            "payload": payload
+        });
     }
 
     //function to do clash calculation
@@ -127,7 +162,7 @@
                         objRef.hit = true;
                         objRef.finished = true;
                         score -= 1;
-                        recordEvent("Clash", Date.now());
+                        recordEvent("vehicleClash", Date.now(), {"score": score.valueOf()});
                     }
                 }
             }
@@ -177,7 +212,7 @@
                     score -= 1;
                     this.hit = true;
                     this.finished = true;
-                    recordEvent("Clash", Date.now());
+                    recordEvent("vehicleClash", Date.now(), {"score": score.valueOf()});
                     return;
                 }
             }
@@ -187,7 +222,7 @@
                 // console.log(userDim);
                 // console.log(this);
                 score += 1;
-                recordEvent("Scored Point", Date.now());
+                recordEvent("vehicleScore", Date.now(), {"score": score.valueOf()});
                 this.finished = true;
             }
         }
@@ -271,7 +306,7 @@
     }
 
     let start = () => {
-        recordEvent("Started Game At", Date.now());
+        recordEvent("startedMiniGame", Date.now());
         intervalID = setInterval(interval, 1000);
         document.getElementById("game").removeAttribute("hidden");
         document.getElementById("startButton").remove();
