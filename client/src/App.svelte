@@ -75,6 +75,8 @@
         }
     }
 
+    // --[ Global Event Listeners ]--
+
     // Add keydown event listener
     document.addEventListener('keydown', (event) => {
         // Compatibility for Key Events (keyCode is deprecated)
