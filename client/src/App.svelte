@@ -19,7 +19,7 @@
 	// --[ Essential App Variables ]--
 
     // Create cache of events
-    let eventCache;
+    let eventCache = [];
 
     // [HACK] This is a workaround for passing messages to children
     let minigame;
@@ -45,20 +45,38 @@
 
 	// --[ Global Event Handling ]--
 
-    // Handle all events
-    function handleMessage(event) {
+    // Handle standard-format events
+    function handleMessage(message) {
+	    // Handle a null or undefined event
+        if (message === undefined || message === null) {
+            console.error("[WARN] App event handler received an undefined event!");
+            return;
+        }
+
 	    // [DEBUG] Print the event to the console
-        // console.log(event);
+        // console.log(message);
 
         // Add event to the cache
-        eventCache.push(event);
+        eventCache.push(message);
 
         // Pass events to minigame
         // [TODO] Eventually, this should propagate events to all children that support passing
         try {
-            minigame.handleMessage(event);
+            minigame.handleMessage(message);
         } catch (e) {
             console.error("[ERROR] Failed to call minigame event handler callback: " + e);
+        }
+    }
+
+    // Handle child-dispatched events
+    function handleDispatchedEvent(event) {
+	    if (event === undefined && event === null) {
+            return;
+        }
+
+        // If the dispatched event is a message type
+        if (event.type === "message") {
+            handleMessage(event.detail);
         }
     }
 
@@ -80,7 +98,7 @@
             "name": "keydown",
             "category": "userevent",
             "intendedTarget": null,
-            "tags": "keyEvent",
+            "tags": ["keyEvent"],
             "payload": {
                 "keyID": keyID
             }
@@ -108,7 +126,7 @@
             "name": "keyup",
             "category": "userevent",
             "intendedTarget": null,
-            "tags": "keyEvent",
+            "tags": ["keyEvent"],
             "payload": {
                 "keyID": keyID
             }
@@ -323,10 +341,10 @@
 
 <main>
     <div class="dashArea-container">
-        <SimpleDash on:message={handleMessage} bind:values={props.dashboardValues} />
+        <SimpleDash on:message={handleDispatchedEvent} bind:values={props.dashboardValues} />
     </div>
     <div class="game-container">
-        <MiniGame bind:this={minigame} on:message={handleMessage} bind:values={props.minigameData} />
+        <MiniGame bind:this={minigame} on:message={handleDispatchedEvent} bind:values={props.minigameData} />
 <!--        <div class="testButtons-container">-->
 <!--            <button on:click={rotWhlLeft}>Turn Wheel Left</button>-->
 <!--            <button on:click={rotWhlRight}>Turn Wheel Right</button>-->
@@ -342,9 +360,9 @@
     </div>
 
 <!--    <div class="instruction-container">-->
-<!--        <Instruction on:message={handleMessage} bind:Instruction={instruction} />-->
+<!--        <Instruction on:message={handleDispatchedEvent} bind:Instruction={instruction} />-->
 <!--    </div>-->
     <!-- <div class="message-container"> -->
-    <!-- <Outer on:message={handleMessage}/> -->
+    <!-- <Outer on:message={handleDispatchedEvent}/> -->
     <!-- </div> -->
 </main>
