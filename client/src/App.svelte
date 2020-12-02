@@ -22,7 +22,7 @@
     let eventCache = [];
 
     // [HACK] This is a workaround for passing messages to children
-    let minigame;
+    let messageRecipients = [];
 
 	// --[ App Props ]--
 	let canvas;
@@ -53,19 +53,17 @@
             return;
         }
 
-	    // [DEBUG] Print the event to the console
-        // console.log(message);
-
         // Add event to the cache
         eventCache.push(message);
 
-        // Pass events to minigame
-        // [TODO] Eventually, this should propagate events to all children that support passing
-        try {
-            minigame.handleMessage(message);
-        } catch (e) {
-            console.error("[ERROR] Failed to call minigame event handler callback: " + e);
-        }
+        // Propagate events to all registered children
+        messageRecipients.forEach((recipient) => {
+            try {
+                recipient.handleMessage(message);
+            } catch (error) {
+                console.error("[ERROR] Failed to call recipient event handler callback: " + error.message);
+            }
+        });
     }
 
     // Handle child-dispatched events
@@ -158,17 +156,21 @@
 		// Call simulation tick handler
         try {
 		    simulationTick(globalTickCount);
-        } catch (e) {
-            console.error("[ERROR] Failed to call simulation tick callback: " + e);
+        } catch (error) {
+            console.error("[ERROR] Failed to call simulation tick callback: " + error.message);
         }
 
 
-		// Call minigame tick handler
-        try {
-            minigame.tick(globalTickCount);
-        } catch (e) {
-            console.error("[ERROR] Failed to call minigame tick callback: " + e);
-        }
+        // Propagate tick to all registered children
+        messageRecipients.forEach((recipient) => {
+            if (recipient.tick !== undefined) {
+                try {
+                    recipient.tick(globalTickCount);
+                } catch (error) {
+                    console.error("[ERROR] Failed to call recipient tick handler callback: " + error.message);
+                }
+            }
+        });
 
 		// Increment tick counter
 		globalTickCount++;
@@ -341,10 +343,10 @@
 
 <main>
     <div class="dashArea-container">
-        <SimpleDash on:message={handleDispatchedEvent} bind:values={props.dashboardValues} />
+        <SimpleDash bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:values={props.dashboardValues} />
     </div>
     <div class="game-container">
-        <MiniGame bind:this={minigame} on:message={handleDispatchedEvent} bind:values={props.minigameData} />
+        <MiniGame bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={props.minigameData} />
 <!--        <div class="testButtons-container">-->
 <!--            <button on:click={rotWhlLeft}>Turn Wheel Left</button>-->
 <!--            <button on:click={rotWhlRight}>Turn Wheel Right</button>-->

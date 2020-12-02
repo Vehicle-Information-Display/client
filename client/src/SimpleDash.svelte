@@ -22,6 +22,10 @@
         hazardLights: false,
     };
 
+    export function handleMessage(message) {
+        // [TODO] Implement message handler in SimpleDash
+    }
+
     let speedometerProps = {};
     // let tachometerProps = {};
     // let testingProps = {};
