@@ -1,13 +1,11 @@
 <script>
     // --[ Imports ]--
 	import {
-		simulationDataStore,
-		simulationScenarioStore,
 		simulationTick,
 		simulationSendMessage,
 		simulationRegisterMessageToApp,
 	} from "./simulation";
-    import { globalEventCache } from "./stores";
+    import { globalEventCache, simulationDataStore, simulationScenarioStore } from "./stores";
     import Instrumentation from './Instrumentation.svelte';
     import SimpleDash from './SimpleDash.svelte';
 	import Instruction from "./instruction.svelte";
