@@ -17,6 +17,10 @@
 	import { testScenario } from './scenarios/testScenario';
 
 	// --[ Essential App Variables ]--
+
+    // Create cache of events
+    let eventCache;
+
     // [HACK] This is a workaround for passing messages to children
     let minigame;
 
@@ -46,7 +50,11 @@
 	    // [DEBUG] Print the event to the console
         // console.log(event);
 
+        // Add event to the cache
+        eventCache.push(event);
+
         // Pass events to minigame
+        // [TODO] Eventually, this should propagate events to all children that support passing
         try {
             minigame.handleMessage(event);
         } catch (e) {
