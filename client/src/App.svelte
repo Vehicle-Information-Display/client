@@ -34,8 +34,8 @@
 		"dashboardData": null,
         "minigameData": {
 		    "canvasDimensions": {
-		        "width": 800,   // [FIXME] INOP!
-                "height": 400   // [FIXME] INOP!
+		        "width": 800,
+                "height": 400
             }
         }
 	}
