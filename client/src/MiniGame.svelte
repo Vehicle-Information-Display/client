@@ -5,7 +5,9 @@
     // Create event dispatcher
     const dispatch = createEventDispatcher();
 
-    // Get properties (all) from parent component
+    /* Get properties (all) from parent component
+     * Note: For external message passing only
+     */
     export let props = {}
 
     // Allow parent components to call this component's event handler
@@ -76,15 +78,14 @@
     // Allow global simulation tick to control minigame time
     export function tick(globalTickTime) {
         // [TODO] Implement minigame tick function
-        console.log("[DEBUG] Minigame received tick!");
     }
 
     //canvas stuff for minigame
     let canvas; //the canvas object
     let canvasContext; //the canvas context object
     let canvasDims = { //canvas dimensions
-        w: 800, //width
-        h: 400 //height
+        w: props.canvasDimensions.width,
+        h: props.canvasDimensions.height
     };
     let widthSpaces = 12; //12-1? spaces across the board to move //columns in objMiniGameSimulation
     let heightSpaces = 10 //10-1? spaces of objects of height same as userDim.h
@@ -127,7 +128,6 @@
             "Event Name": eventN,
             "Time": time
         });
-        console.log(times[times.length-1]['Event Name'] + ": " + times[times.length-1]['Time']);
 
         /* Emit message that the vehicle has moved to the left
          * Note: This basically treats the recordEvent function as a wrapper/shim for message dispatching

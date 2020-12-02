@@ -36,9 +36,6 @@
 		    "canvasDimensions": {
 		        "width": 800,   // [FIXME] INOP!
                 "height": 400   // [FIXME] INOP!
-            },
-            "gameState": {
-		        "direction": "center",
             }
         }
 	}
@@ -346,7 +343,7 @@
         <SimpleDash bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:values={props.dashboardValues} />
     </div>
     <div class="game-container">
-        <MiniGame bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={props.minigameData} />
+        <MiniGame bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:props={props.minigameData} />
 <!--        <div class="testButtons-container">-->
 <!--            <button on:click={rotWhlLeft}>Turn Wheel Left</button>-->
 <!--            <button on:click={rotWhlRight}>Turn Wheel Right</button>-->
