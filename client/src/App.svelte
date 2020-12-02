@@ -1,6 +1,5 @@
 <script>
     // --[ Imports ]--
-	import { onMount } from "svelte";
 	import {
 		simulationDataStore,
 		simulationScenarioStore,
@@ -8,7 +7,9 @@
 		simulationSendMessage,
 		simulationRegisterMessageToApp,
 	} from "./simulation";
-	import SimpleDash from './SimpleDash.svelte';
+    import { globalEventCache } from "./stores";
+    import Instrumentation from './Instrumentation.svelte';
+    import SimpleDash from './SimpleDash.svelte';
 	import Instruction from "./instruction.svelte";
 	import Game from "./game.svelte";
 	import MiniGame from './MiniGame.svelte';
@@ -17,9 +18,6 @@
 	import { testScenario } from './scenarios/testScenario';
 
 	// --[ Essential App Variables ]--
-
-    // Create cache of events
-    let eventCache = [];
 
     // [HACK] This is a workaround for passing messages to children
     let messageRecipients = [];
@@ -31,6 +29,9 @@
 
 	let props = {
 		"name": "Simple Dashboard",
+        "instrumentationData": {
+            "messageCallback": handleMessage
+        },
 		"dashboardData": null,
         "minigameData": {
 		    "canvasDimensions": {
@@ -50,8 +51,12 @@
             return;
         }
 
-        // Add event to the cache
-        eventCache.push(message);
+        // Cache the message
+        try {
+            globalEventCache.addMessage(message);
+        } catch (error) {
+            console.error("[ERROR] Error appending message to message cache:" + error.message);
+        }
 
         // Propagate events to all registered children
         messageRecipients.forEach((recipient) => {
@@ -158,7 +163,6 @@
         } catch (error) {
             console.error("[ERROR] Failed to call simulation tick callback: " + error.message);
         }
-
 
         // Propagate tick to all registered children
         messageRecipients.forEach((recipient) => {
@@ -340,12 +344,13 @@
     }
 </style>
 
+<Instrumentation globalEventCache={globalEventCache} bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:props={props.instrumentationData} />
 <main>
     <div class="dashArea-container">
-        <SimpleDash bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:values={props.dashboardValues} />
+        <SimpleDash bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={props.dashboardData} />
     </div>
     <div class="game-container">
-        <MiniGame bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:props={props.minigameData} />
+        <MiniGame bind:this={messageRecipients[2]} on:message={handleDispatchedEvent} bind:props={props.minigameData} />
 <!--        <div class="testButtons-container">-->
 <!--            <button on:click={rotWhlLeft}>Turn Wheel Left</button>-->
 <!--            <button on:click={rotWhlRight}>Turn Wheel Right</button>-->
