@@ -29,6 +29,7 @@
 
 	let props = {
 		"name": "Simple Dashboard",
+        "tickTime": 500,
         "instrumentationData": {
             "messageCallback": handleMessage
         },
@@ -180,7 +181,7 @@
 	}
 
 	// Call tick every 500 milliseconds
-	setInterval(globalTick, 500);
+	setInterval(globalTick, props.tickTime);
 
 	// --[ Dashboard Tests ]--
 
