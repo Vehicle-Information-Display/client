@@ -36,7 +36,7 @@ let simulationDataStore = writable({
 let simulationScenarioStore = writable({});
 
 // The local simulation store subscriber object that contains the up-to-date simulation scenario to use
-let simulationScenario = {};
+let simulationScenario = {};  // Define here, use elsewhere
 const unsubscribe = simulationScenarioStore.subscribe(scenario => {
     simulationScenario = scenario;
 });

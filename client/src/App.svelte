@@ -16,6 +16,10 @@
 	// --[ Scenario Imports ]--
 	import { testScenario } from './scenarios/testScenario';
 
+	// --[ Essential App Variables ]--
+    // [HACK] This is a workaround for passing messages to children
+    let minigame;
+
 	// --[ App Props ]--
 	let canvas;
 	let game = { status: "on" };
@@ -23,8 +27,88 @@
 
 	let props = {
 		"name": "Simple Dashboard",
-		"dashboardData": null
+		"dashboardData": null,
+        "minigameData": {
+		    "canvasDimensions": {
+		        "width": 800,   // [FIXME] INOP!
+                "height": 400   // [FIXME] INOP!
+            },
+            "gameState": {
+		        "direction": "center",
+            }
+        }
 	}
+
+	// --[ Global Event Handling ]--
+
+    // Handle all events
+    function handleMessage(event) {
+	    // [DEBUG] Print the event to the console
+        // console.log(event);
+
+        // Pass events to minigame
+        try {
+            minigame.handleMessage(event);
+        } catch (e) {
+            console.error("[ERROR] Failed to call minigame event handler callback: " + e);
+        }
+    }
+
+    // Add keydown event listener
+    document.addEventListener('keydown', (event) => {
+        // Compatibility for Key Events (keyCode is deprecated)
+        let keyID = null;
+        if (event.key !== undefined) {
+            keyID = event.key;
+        } else if (event.keyIdentifier !== undefined) {
+            keyID = event.keyIdentifier;
+        } else {
+            keyID = event.keyCode;
+        }
+
+        // Build message structure
+        let message = {
+            "timestamp": Date.now(),
+            "name": "keydown",
+            "category": "userevent",
+            "intendedTarget": null,
+            "tags": "keyEvent",
+            "payload": {
+                "keyID": keyID
+            }
+        }
+
+        // Emit message
+        handleMessage(message);
+    });
+
+	// Add keyup event listener
+	document.addEventListener('keyup', (event) => {
+        // Compatibility for Key Events (keyCode is deprecated)
+        let keyID = null;
+        if (event.key !== undefined) {
+            keyID = event.key;
+        } else if (event.keyIdentifier !== undefined) {
+            keyID = event.keyIdentifier;
+        } else {
+            keyID = event.keyCode;
+        }
+
+        // Build message structure
+        let message = {
+            "timestamp": Date.now(),
+            "name": "keyup",
+            "category": "userevent",
+            "intendedTarget": null,
+            "tags": "keyEvent",
+            "payload": {
+                "keyID": keyID
+            }
+        }
+
+        // Emit message
+        handleMessage(message);
+    });
 
 	// --[ Global Simulation Setup ]--
 
@@ -46,7 +130,19 @@
 	// All time-dependent calls should be registered here
 	let globalTick = () => {
 		// Call simulation tick handler
-		simulationTick(globalTickCount);
+        try {
+		    simulationTick(globalTickCount);
+        } catch (e) {
+            console.error("[ERROR] Failed to call simulation tick callback: " + e);
+        }
+
+
+		// Call minigame tick handler
+        try {
+            minigame.tick(globalTickCount);
+        } catch (e) {
+            console.error("[ERROR] Failed to call minigame tick callback: " + e);
+        }
 
 		// Increment tick counter
 		globalTickCount++;
@@ -146,10 +242,6 @@
             props.dashboardValues.hazardLights = false
         }
     }
-
-    function handleMessage(event) {
-        alert(event.detail.text);
-    }
 </script>
 
 <style>
@@ -223,10 +315,10 @@
 
 <main>
     <div class="dashArea-container">
-        <SimpleDash bind:values={props.dashboardValues} />
+        <SimpleDash on:message={handleMessage} bind:values={props.dashboardValues} />
     </div>
     <div class="game-container">
-        <MiniGame />
+        <MiniGame bind:this={minigame} on:message={handleMessage} bind:values={props.minigameData} />
 <!--        <div class="testButtons-container">-->
 <!--            <button on:click={rotWhlLeft}>Turn Wheel Left</button>-->
 <!--            <button on:click={rotWhlRight}>Turn Wheel Right</button>-->
@@ -242,7 +334,7 @@
     </div>
 
 <!--    <div class="instruction-container">-->
-<!--        <Instruction bind:Instruction={instruction} />-->
+<!--        <Instruction on:message={handleMessage} bind:Instruction={instruction} />-->
 <!--    </div>-->
     <!-- <div class="message-container"> -->
     <!-- <Outer on:message={handleMessage}/> -->

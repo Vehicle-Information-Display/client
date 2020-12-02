@@ -2,6 +2,60 @@
     //when mounted then do stuff function
     import { onMount } from "svelte";
 
+    // Get properties (all) from parent component
+    export let props = {}
+
+    // Allow parent components to call this component's event handler
+    export function handleMessage(message) {
+        // console.log("[DEBUG] MiniGame received an event");
+        console.log(message);
+
+        /* Handle Keydown event
+         * [FIXME] Shouldn't be able to move while the simulation isn't going!
+         * */
+        if (message !== undefined &&
+            message.name !== undefined &&
+            message.name === "keydown") {
+
+            // Get the value of the pressed key
+            let key = message.payload.keyID;
+
+            // Debug log
+            // console.log("[DEBUG] Got keydown event with: " + key);
+
+            // Handle different key events
+            if (key === 'd') {
+                console.log("[DEBUG] Moving Right");
+                if (userDim.currX + canvasDims.w / widthSpaces < canvasDims.w - canvasDims.w / widthSpaces) {
+                    moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, canvasDims.w / widthSpaces, 0, "car");
+                    userDim.currX += canvasDims.w / widthSpaces;
+                    // console.log(userDim.currX);
+                }
+                checkClashFromUser();
+
+                // [TODO] Emit message that the vehicle has moved to the right
+            }
+
+            else if (key === 'a') {
+                console.log("[DEBUG] Moving Left");
+                if (userDim.currX - canvasDims.w / widthSpaces > 0) {
+                    moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, -canvasDims.w / widthSpaces, 0, "car");
+                    userDim.currX += -canvasDims.w / widthSpaces;
+                    // console.log(userDim.currX);
+                }
+                checkClashFromUser();
+
+                // [TODO] Emit message that the vehicle has moved to the right
+            }
+        }
+    }
+
+    // Allow global simulation tick to control minigame time
+    export function tick(globalTickTime) {
+        // [TODO] Implement minigame tick function
+        console.log("[DEBUG] Minigame received tick!");
+    }
+
     //canvas stuff for minigame
     let canvas; //the canvas object
     let canvasContext; //the canvas context object
@@ -169,28 +223,6 @@
     onMount(() => {
         // console.log("inside onMount function")
         drawCanvas();
-        document.addEventListener('keydown', function (event) {
-            // console.log(event);
-            if (event.key === 'd') {
-                console.log("right");
-                if(userDim.currX + canvasDims.w/widthSpaces < canvasDims.w - canvasDims.w/widthSpaces) {
-                    moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, canvasDims.w / widthSpaces, 0, "car");
-                    userDim.currX += canvasDims.w / widthSpaces;
-                    // console.log(userDim.currX);
-                }
-                checkClashFromUser();
-            }
-            if (event.key === 'a') {
-                console.log("left");
-                if(userDim.currX - canvasDims.w/widthSpaces > 0) {
-                    moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, -canvasDims.w / widthSpaces, 0, "car");
-                    userDim.currX += -canvasDims.w / widthSpaces;
-                    // console.log(userDim.currX);
-                }
-                checkClashFromUser();
-            }
-            // add other event keys
-        });
 
         // create objects
         createObj();
@@ -257,7 +289,7 @@
 <div class="minigame-container">
 
     <!-- Start the simulation button -->
-    <!-- [FIXME] This should be removed in favor of an all-encompassing simulation start button -->
+    <!-- [FIXME] This start button should be removed in favor of an all-encompassing simulation start button -->
     <button on:click={start} id="startButton">Start the MiniGame</button>
 
     <!-- img to be used as the main user in the simulation in the canvas -->
