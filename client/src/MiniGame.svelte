@@ -282,7 +282,7 @@
                 activeRow = 0;
                 clearInterval(intervalID);
                 createObj();
-                intervalID = setInterval(interval, 1000);
+                intervalID = setInterval(interval, props.tempRefreshTimer);
             }
         }
     }
@@ -307,7 +307,7 @@
 
     let start = () => {
         recordEvent("startedMiniGame", Date.now());
-        intervalID = setInterval(interval, 1000);
+        intervalID = setInterval(interval, props.tempRefreshTimer);
         document.getElementById("game").removeAttribute("hidden");
         document.getElementById("startButton").remove();
     }

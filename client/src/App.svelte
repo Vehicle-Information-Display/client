@@ -33,6 +33,7 @@
         },
 		"dashboardData": null,
         "minigameData": {
+		    "tempRefreshTimer": 500,
 		    "canvasDimensions": {
 		        "width": 800,
                 "height": 400
