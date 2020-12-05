@@ -88,7 +88,7 @@ let handleInstruction = function (instruction, value) {
                 try {
                     console.debug("[DEBUG] Received setTurnIndicator instruction for: " + value);
                     simulationDataStore.update((sd) => {
-                        sd.turnIndicatorStatus = toString(value);
+                        sd.turnIndicatorStatus = value;
                         return sd;
                     });
                 } catch (error) {
@@ -132,43 +132,43 @@ let handleInstruction = function (instruction, value) {
                     switch (value.ID) {
                         case "engineOverheat":
                             simulationDataStore.update((sd) => {
-                                sd.annunciatorLights.engineOverheat = toString(value.value);
+                                sd.annunciatorLights.engineOverheat = value.value;
                                 return sd;
                             });
                             break;
                         case "lowTirePressure":
                             simulationDataStore.update((sd) => {
-                                sd.annunciatorLights.lowTirePressure = toString(value.value);
+                                sd.annunciatorLights.lowTirePressure = value.value;
                                 return sd;
                             });
                             break;
                         case "lowBatteryLevel":
                             simulationDataStore.update((sd) => {
-                                sd.annunciatorLights.lowBatteryLevel = toString(value.value);
+                                sd.annunciatorLights.lowBatteryLevel = value.value;
                                 return sd;
                             });
                             break;
                         case "checkEngine":
                             simulationDataStore.update((sd) => {
-                                sd.annunciatorLights.checkEngine = toString(value.value);
+                                sd.annunciatorLights.checkEngine = value.value;
                                 return sd;
                             });
                             break;
                         case "headlights":
                             simulationDataStore.update((sd) => {
-                                sd.annunciatorLights.headlights = toString(value.value);
+                                sd.annunciatorLights.headlights = value.value;
                                 return sd;
                             });
                             break;
                         case "highBeams":
                             simulationDataStore.update((sd) => {
-                                sd.annunciatorLights.highBeams = toString(value.value);
+                                sd.annunciatorLights.highBeams = value.value;
                                 return sd;
                             });
                             break;
                         case "doorsUnlocked":
                             simulationDataStore.update((sd) => {
-                                sd.annunciatorLights.doorsUnlocked = toString(value.value);
+                                sd.annunciatorLights.doorsUnlocked = value.value;
                                 return sd;
                             });
                             break;
@@ -185,7 +185,7 @@ let handleInstruction = function (instruction, value) {
                 try {
                     console.debug("[DEBUG] Received setWeather instruction for: " + value);
                     simulationDataStore.update((sd) => {
-                        sd.weather.weatherType = toString(value);
+                        sd.weather.weatherType = value;
                         return sd;
                     });
                 } catch (error) {
