@@ -361,6 +361,7 @@
 
     <!-- Start the simulation button -->
     <!-- [FIXME] This start button should be removed in favor of an all-encompassing simulation start button -->
+    
     <button on:click={start} id="startButton">Start the MiniGame</button>
 
     <!-- img to be used as the main user in the simulation in the canvas -->
