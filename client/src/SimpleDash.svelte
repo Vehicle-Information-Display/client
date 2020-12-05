@@ -47,7 +47,7 @@
 
     $:tachometerProps = {
         "name": "Tachometer",
-        "value": values.rpm / 200
+        "value": values.engineRPM / 200
     }
 
     // $: rpmProps = {
