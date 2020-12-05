@@ -22,10 +22,6 @@
     let messageRecipients = [];
 
 	// --[ App Props ]--
-	let canvas;
-	let game = { status: "on" };
-	let instruction = { status: "on" };
-
 	let props = {
 		"name": "Simple Dashboard",
         "tickTime": 500,
@@ -39,6 +35,11 @@
 		        "width": 800,
                 "height": 400
             }
+        },
+        "instructionData": {
+		    "display": true,
+		    "currentInstruction": "",
+            "alertDuration": 1500
         }
 	}
 
@@ -304,12 +305,8 @@
     }
 
     .instruction-container {
-        display: grid;
-        grid-row: gameRow-end instuctionRow-start / instructionRow-end
-            dash-start;
         border: 7px solid skyblue;
         border-radius: 25px;
-        position: relative;
     }
 
     .dashArea-container {
@@ -366,10 +363,12 @@
 <!--        </div>-->
     </div>
 
-<!--    <div class="instruction-container">-->
-<!--        <Instruction on:message={handleDispatchedEvent} bind:Instruction={instruction} />-->
-<!--    </div>-->
-    <!-- <div class="message-container"> -->
-    <!-- <Outer on:message={handleDispatchedEvent}/> -->
-    <!-- </div> -->
+    { #if props.instructionData.display }
+        <div class="instruction-container">
+            <Instruction on:message={handleDispatchedEvent} bind:props={props.instructionData} />
+        </div>
+    {/if}
+<!--     <div class="message-container"> -->
+<!--     <Outer on:message={handleDispatchedEvent}/> -->
+<!--     </div> -->
 </main>
