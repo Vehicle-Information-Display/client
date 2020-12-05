@@ -28,7 +28,6 @@
         "instrumentationData": {
             "messageCallback": handleMessage
         },
-		"dashboardData": null,
         "minigameData": {
 		    "tempRefreshTimer": 500,
 		    "canvasDimensions": {
@@ -184,52 +183,6 @@
 	// Call tick every 500 milliseconds
 	setInterval(globalTick, props.tickTime);
 
-	// --[ Dashboard Tests ]--
-
-	// Update properties when simulationData updates
-	const unsubscribe = simulationDataStore.subscribe(data => {
-		props.dashboardData = data;
-	});
-
-	// Increment the speed
-	let incSpd = () => {
-		console.debug("[DEBUG] Incrementing speed..." + props.dashboardData.speed);
-		// props.dashboardValues.speed += 1;
-		let message = {
-			"timestamp" : Date(),
-			"name" : "Test",
-			"category" : "simulation_instruction",
-			"intendedTarget" : "simulation_core",
-			"tags" : ["simulation_status_change"],
-			"payload" : {
-				"instruction": "setSpeed",
-				"value": parseInt(props.dashboardData.speed) + 1,
-			}
-		}
-
-		// Send message to the simulation
-		simulationSendMessage(message)
-	}
-
-	let incRPM = () => {
-		console.debug("[DEBUG] Incrementing RPM...");
-		// props.dashboardValues.rpm += 1000;
-		let message = {
-			"timestamp" : Date(),
-			"name" : "Test",
-			"category" : "simulation_instruction",
-			"intendedTarget" : "simulation_core",
-			"tags" : ["simulation_status_change"],
-			"payload" : {
-				"instruction": "setRPM",
-				"value": parseInt(props.dashboardData.rpm) + 1,
-			}
-		}
-
-		// Send message to the simulation
-		simulationSendMessage(message)
-	}
-
     let rotWhlRight = () => {
         console.log("Turning Wheel Right...");
         props.dashboardValues.wheelRotation += 3;
@@ -345,7 +298,7 @@
 <Instrumentation globalEventCache={globalEventCache} bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:props={props.instrumentationData} />
 <main>
     <div class="dashArea-container">
-        <SimpleDash bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={props.dashboardData} />
+        <SimpleDash bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={$simulationDataStore} />
     </div>
     <div class="game-container">
         <MiniGame bind:this={messageRecipients[2]} on:message={handleDispatchedEvent} bind:props={props.minigameData} />
