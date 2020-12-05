@@ -8,6 +8,7 @@
     import CogWheel from "./Cogwheel.svelte";
     import Temperature from "./tempModule.svelte";
     import MusicControls from "./MusicControls.svelte";
+    import MusicScreen from "./musicScreen.svelte";
     import SteeringWheel from "./SteeringWheel.svelte";
     import SeatWC from "./SeatWarmer.svelte";
     import Outer from "./Outer.svelte";
@@ -238,7 +239,7 @@
         border-radius: 25px; */
         grid-area: optionsInfo;
         grid-auto-flow: column;
-        grid-template-columns: 20% 10% 55% 8% 7%;
+        grid-template-columns: 20% 10% 50% 9% 6%;
         grid-template-rows: 100%;
         grid-template-areas: "mySettings hazards myTime myWeather myTemperature";
     }
@@ -456,7 +457,9 @@
             <div class="musicButtons-container">
                 <MusicControls bind:mC={musicControls} />
             </div>
-            <div class="musicType-container">SONG DETAILS......
+            <div class="musicType-container">
+                <!-- SONG DETAILS...... -->
+                <MusicScreen/>
             </div>
             
         </div>
