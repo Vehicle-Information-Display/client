@@ -118,7 +118,7 @@ let handleInstruction = function (instruction, value) {
                 try {
                     console.debug("[DEBUG] Received setAlert instruction for: " + value);
                     simulationDataStore.update((sd) => {
-                        sd.alertBar = toString(value);
+                        sd.alertBar = value;
                         return sd;
                     });
                 } catch (error) {
