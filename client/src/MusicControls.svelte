@@ -1,5 +1,5 @@
 <script>
-	import Volume from "./volumeSlider.svelte";
+	import Volume from "./VolumeSlider.svelte";
     export let mC = {
         status: "on",
     };

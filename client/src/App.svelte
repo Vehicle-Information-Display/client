@@ -1,5 +1,5 @@
 <script>
-    // --[ Imports ]--
+    // --[ Core Imports ]--
 	import {
 		simulationTick,
 		simulationSendMessage,
@@ -7,10 +7,11 @@
 	} from "./simulation";
     import { globalEventCache, simulationDataStore, simulationScenarioStore } from "./stores";
     import Instrumentation from './Instrumentation.svelte';
-    import SimpleDash from './SimpleDash.svelte';
-	import Instruction from "./instruction.svelte";
-	import Game from "./game.svelte";
+	import Instruction from "./Instruction.svelte";
 	import MiniGame from './MiniGame.svelte';
+
+	// --[ Layout/Scenario Imports ]--
+    import SimpleDash from './SimpleDash.svelte';
 
 	// --[ Scenario Imports ]--
 	import { testScenario } from './scenarios/testScenario';

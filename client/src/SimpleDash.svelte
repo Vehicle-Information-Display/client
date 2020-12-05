@@ -3,10 +3,10 @@
     import SimpleGauge from "./SimpleGauge.svelte";
     import Clock from "./Clocks.svelte";
     import HazardLights from "./HazardLights.svelte";
-    import TackySun from "./tackySun.svelte";
-    import ClimateControl from "./climateControl.svelte";
+    import TackySun from "./TackySun.svelte";
+    import ClimateControl from "./ClimateControl.svelte";
     import CogWheel from "./Cogwheel.svelte";
-    import Temperature from "./tempModule.svelte";
+    import Temperature from "./TempModule.svelte";
     import MusicControls from "./MusicControls.svelte";
     import SteeringWheel from "./SteeringWheel.svelte";
     import SeatWC from "./SeatWarmer.svelte";
