@@ -50,30 +50,27 @@ body {
 }
 h1 {
     margin: 0 auto;
-    text-align: center;
+    text-align: right;
     color: #fff;
     font-size: 1em;
 }
 
 .inner-wrapper {
   display: table;
-  position:absolute;
   width: 100%;
   height: 100%;
 }
 
 .header-wrapper {
   display: table-cell;
-  text-align: center;
+  text-align: right;
   vertical-align: middle;
-  position:relative;
 }
 
 div {
   margin:auto;
   width:100%;
   height:100%;
-  position:absolute;
 }
 body.sunny {
     background-image: linear-gradient(to right top, #ff4e50, #ff713e, #ff932b, #ffb41d, #f9d423);
