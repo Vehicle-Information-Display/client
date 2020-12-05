@@ -2,6 +2,7 @@
   let iframeApiReady = false;
   
   import { setContext, onMount } from "svelte";
+  export function onPlayerReady(){};
   var tag = document.createElement("script");
   tag.src = "https://www.youtube.com/iframe_api";
   var firstScriptTag = document.getElementsByTagName("script")[0];
@@ -11,15 +12,11 @@
     window.dispatchEvent(new Event("iframeApiReady"));
 </script>
 
-<script>
+<script cointext="module">
 import { createEventDispatcher } from "svelte";
 import { getContext } from "svelte";
 const dispatch = createEventDispatcher();
-export let props = {
-        "myVolume": 0
-    }
-    
-
+let value = 0;
 /**
  * Put your video IDs in this array
  */
@@ -55,7 +52,8 @@ window.addEventListener("iframeApiReady", function(e) {
 
 function onPlayerReady(event) {
   event.target.loadVideoById(videoIDs[currentVideoId]);
-  
+    
+  player.setVolume(25);
     // bind events
     var playButton = document.getElementById("play-button");
     playButton.addEventListener("click", function() {
@@ -81,15 +79,18 @@ function onPlayerReady(event) {
         player.previousVideo();
     });
 
-var vol = document.getElementById("volume");
-    vol.addEventListener("click", function() {
-        player.setVolume(props.myVolume);
+var vol = document.getElementById("slider");
+    if("mousedown"){ // check if mouse down.
+        vol.addEventListener("mousemove", function(current) {
+        console.log("Hello");
+        player.setVolume(current);
     });
+}   
+    
     
      player.loadPlaylist( {
         playlist:videoIDs
     } );
-    
 
 
 }
