@@ -1,42 +1,11 @@
 // --[ Imports ]--
 import { writable } from 'svelte/store';
+import { simulationDataStore, simulationScenarioStore } from './stores';
 
 // --[ Simulation Core Data Storage ]--
-let simulationDataStore = writable({
-    "speed": "10",               // Measured in miles per hour
-    "engineRPM": "1000",           // Measured in revolutions per second
-    "fuelLevelPercent": "100",  // Measured in percentage of a full tank
-    "turnIndicatorStatus" : "OFF", // Options: LEFT, OFF, RIGHT
-    "annunciatorLights" : {
-        "engineOverheat": "false",
-        "lowTirePressure" : "false",
-        "lowBatteryLevel" : "false",
-        "checkEngine" : "false",
-        "headlights" : "false",
-        "highBeams" : "false",
-        "doorsUnlocked" : "false"
-    },
-    "infotainment" : {
-        "phoneConnected" : "false",
-        "currentMedia" : "null",     // ID corresponding to media currently being played (or paused)
-        "mediaPlaying": "false",
-        "weather" : {
-            "weatherType" : "SUNNY", // Options: SUNNY, RAIN
-            "temperature" : "70",    // Degrees Fahrenheit
-        }
-    },
-    "climateControl" : {
-        "seatWarmerStatus" : "OFF",      // Options: HEAT, OFF, COOL
-        "airConditionerStatus" : "OFF",  // Options: HEAT, OFF, COOL
-        "ventilationStatus" : "OFF"      // Options: OFF, LOW, MEDIUM, HIGH
-    }
-});
-
-// The scenario store that allows the scenario to be passed between components
-let simulationScenarioStore = writable({});
 
 // The local simulation store subscriber object that contains the up-to-date simulation scenario to use
-let simulationScenario = {};
+let simulationScenario = {};  // Define here, use elsewhere
 const unsubscribe = simulationScenarioStore.subscribe(scenario => {
     simulationScenario = scenario;
 });
@@ -90,4 +59,4 @@ let handleInstruction = function (instruction, value) {
 }
 
 // --[ Exports ]--
-export { simulationDataStore, simulationScenarioStore, simulationTick, simulationSendMessage, simulationRegisterMessageToApp };
+export { simulationTick, simulationSendMessage, simulationRegisterMessageToApp };

@@ -22,6 +22,10 @@
         hazardLights: false,
     };
 
+    export function handleMessage(message) {
+        // [TODO] Implement message handler in SimpleDash
+    }
+
     let speedometerProps = {};
     // let tachometerProps = {};
     // let testingProps = {};
@@ -70,7 +74,7 @@
         status: values.hazardLights,
     };
 
-    function handleMessage(event) {
+    function handleComponentEvent(event) {
         alert(event.detail.text);
     }
 </script>
@@ -450,7 +454,7 @@
         </div>
         <div class="nav-container">
             <fontSize>Nav</fontSize><br />
-            <Outer on:message={handleMessage} />
+            <Outer on:message={handleComponentEvent} />
         </div>
         <div class="music-container">
             <div class="musicButtons-container">

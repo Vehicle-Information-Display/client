@@ -1,20 +1,24 @@
 <script>
     // --[ Imports ]--
-	import { onMount } from "svelte";
 	import {
-		simulationDataStore,
-		simulationScenarioStore,
 		simulationTick,
 		simulationSendMessage,
 		simulationRegisterMessageToApp,
 	} from "./simulation";
-	import SimpleDash from './SimpleDash.svelte';
+    import { globalEventCache, simulationDataStore, simulationScenarioStore } from "./stores";
+    import Instrumentation from './Instrumentation.svelte';
+    import SimpleDash from './SimpleDash.svelte';
 	import Instruction from "./instruction.svelte";
 	import Game from "./game.svelte";
 	import MiniGame from './MiniGame.svelte';
 
 	// --[ Scenario Imports ]--
 	import { testScenario } from './scenarios/testScenario';
+
+	// --[ Essential App Variables ]--
+
+    // [HACK] This is a workaround for passing messages to children
+    let messageRecipients = [];
 
 	// --[ App Props ]--
 	let canvas;
@@ -23,8 +27,116 @@
 
 	let props = {
 		"name": "Simple Dashboard",
-		"dashboardData": null
+        "tickTime": 500,
+        "instrumentationData": {
+            "messageCallback": handleMessage
+        },
+		"dashboardData": null,
+        "minigameData": {
+		    "tempRefreshTimer": 500,
+		    "canvasDimensions": {
+		        "width": 800,
+                "height": 400
+            }
+        }
 	}
+
+	// --[ Global Event Handling ]--
+
+    // Handle standard-format events
+    function handleMessage(message) {
+	    // Handle a null or undefined event
+        if (message === undefined || message === null) {
+            console.error("[WARN] App event handler received an undefined event!");
+            return;
+        }
+
+        // Cache the message
+        try {
+            globalEventCache.addMessage(message);
+        } catch (error) {
+            console.error("[ERROR] Error appending message to message cache:" + error.message);
+        }
+
+        // Propagate events to all registered children
+        messageRecipients.forEach((recipient) => {
+            try {
+                recipient.handleMessage(message);
+            } catch (error) {
+                console.error("[ERROR] Failed to call recipient event handler callback: " + error.message);
+            }
+        });
+    }
+
+    // Handle child-dispatched events
+    function handleDispatchedEvent(event) {
+	    if (event === undefined && event === null) {
+            return;
+        }
+
+        // If the dispatched event is a message type
+        if (event.type === "message") {
+            handleMessage(event.detail);
+        }
+    }
+
+    // --[ Global Event Listeners ]--
+
+    // Add keydown event listener
+    document.addEventListener('keydown', (event) => {
+        // Compatibility for Key Events (keyCode is deprecated)
+        let keyID = null;
+        if (event.key !== undefined) {
+            keyID = event.key;
+        } else if (event.keyIdentifier !== undefined) {
+            keyID = event.keyIdentifier;
+        } else {
+            keyID = event.keyCode;
+        }
+
+        // Build message structure
+        let message = {
+            "timestamp": Date.now(),
+            "name": "keydown",
+            "category": "userevent",
+            "intendedTarget": null,
+            "tags": ["keyEvent"],
+            "payload": {
+                "keyID": keyID
+            }
+        }
+
+        // Emit message
+        handleMessage(message);
+    });
+
+	// Add keyup event listener
+	document.addEventListener('keyup', (event) => {
+        // Compatibility for Key Events (keyCode is deprecated)
+        let keyID = null;
+        if (event.key !== undefined) {
+            keyID = event.key;
+        } else if (event.keyIdentifier !== undefined) {
+            keyID = event.keyIdentifier;
+        } else {
+            keyID = event.keyCode;
+        }
+
+        // Build message structure
+        let message = {
+            "timestamp": Date.now(),
+            "name": "keyup",
+            "category": "userevent",
+            "intendedTarget": null,
+            "tags": ["keyEvent"],
+            "payload": {
+                "keyID": keyID
+            }
+        }
+
+        // Emit message
+        handleMessage(message);
+    });
 
 	// --[ Global Simulation Setup ]--
 
@@ -46,14 +158,29 @@
 	// All time-dependent calls should be registered here
 	let globalTick = () => {
 		// Call simulation tick handler
-		simulationTick(globalTickCount);
+        try {
+		    simulationTick(globalTickCount);
+        } catch (error) {
+            console.error("[ERROR] Failed to call simulation tick callback: " + error.message);
+        }
+
+        // Propagate tick to all registered children
+        messageRecipients.forEach((recipient) => {
+            if (recipient.tick !== undefined) {
+                try {
+                    recipient.tick(globalTickCount);
+                } catch (error) {
+                    console.error("[ERROR] Failed to call recipient tick handler callback: " + error.message);
+                }
+            }
+        });
 
 		// Increment tick counter
 		globalTickCount++;
 	}
 
 	// Call tick every 500 milliseconds
-	setInterval(globalTick, 500);
+	setInterval(globalTick, props.tickTime);
 
 	// --[ Dashboard Tests ]--
 
@@ -146,10 +273,6 @@
             props.dashboardValues.hazardLights = false
         }
     }
-
-    function handleMessage(event) {
-        alert(event.detail.text);
-    }
 </script>
 
 <style>
@@ -221,12 +344,13 @@
     }
 </style>
 
+<Instrumentation globalEventCache={globalEventCache} bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:props={props.instrumentationData} />
 <main>
     <div class="dashArea-container">
-        <SimpleDash bind:values={props.dashboardValues} />
+        <SimpleDash bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={props.dashboardData} />
     </div>
     <div class="game-container">
-        <MiniGame />
+        <MiniGame bind:this={messageRecipients[2]} on:message={handleDispatchedEvent} bind:props={props.minigameData} />
 <!--        <div class="testButtons-container">-->
 <!--            <button on:click={rotWhlLeft}>Turn Wheel Left</button>-->
 <!--            <button on:click={rotWhlRight}>Turn Wheel Right</button>-->
@@ -242,9 +366,9 @@
     </div>
 
 <!--    <div class="instruction-container">-->
-<!--        <Instruction bind:Instruction={instruction} />-->
+<!--        <Instruction on:message={handleDispatchedEvent} bind:Instruction={instruction} />-->
 <!--    </div>-->
     <!-- <div class="message-container"> -->
-    <!-- <Outer on:message={handleMessage}/> -->
+    <!-- <Outer on:message={handleDispatchedEvent}/> -->
     <!-- </div> -->
 </main>

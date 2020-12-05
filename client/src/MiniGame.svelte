@@ -1,13 +1,91 @@
 <script>
     //when mounted then do stuff function
-    import { onMount } from "svelte";
+    import { onMount, createEventDispatcher } from "svelte";
+
+    // Create event dispatcher
+    const dispatch = createEventDispatcher();
+
+    /* Get properties (all) from parent component
+     * Note: For external message passing only
+     */
+    export let props = {}
+
+    // Allow parent components to call this component's event handler
+    export function handleMessage(message) {
+        // console.log("Minigame received message: ");
+        // console.log(message);
+
+        /* Handle Keydown event
+         * [FIXME] Shouldn't be able to move while the simulation isn't going!
+         * */
+        if (message !== undefined &&
+            message.name !== undefined &&
+            message.name === "keydown") {
+
+            // Get the value of the pressed key
+            let key = message.payload.keyID;
+
+            // Debug log
+            // console.log("[DEBUG] Got keydown event with: " + key);
+
+            // Handle different key events
+            if (key === 'd') {
+                console.log("[DEBUG] Moving Right");
+                if (userDim.currX + canvasDims.w / widthSpaces < canvasDims.w - canvasDims.w / widthSpaces) {
+                    moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, canvasDims.w / widthSpaces, 0, "car");
+                    userDim.currX += canvasDims.w / widthSpaces;
+                    // console.log(userDim.currX);
+                }
+                checkClashFromUser();
+
+                // Emit message that the vehicle has moved to the right
+                dispatch('message', {
+                    "timestamp": Date.now(),
+                    "name": "vehicleright",
+                    "category": "minigameevent",
+                    "intendedTarget": "simulation",
+                    "tags": ["vehicleMotion"],
+                    "payload": {
+                        "direction": "right"
+                    }
+                });
+            }
+
+            else if (key === 'a') {
+                console.log("[DEBUG] Moving Left");
+                if (userDim.currX - canvasDims.w / widthSpaces > 0) {
+                    moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, -canvasDims.w / widthSpaces, 0, "car");
+                    userDim.currX += -canvasDims.w / widthSpaces;
+                    // console.log(userDim.currX);
+                }
+                checkClashFromUser();
+
+                // Emit message that the vehicle has moved to the left
+                dispatch('message', {
+                    "timestamp": Date.now(),
+                    "name": "vehicleleft",
+                    "category": "minigameevent",
+                    "intendedTarget": "simulation",
+                    "tags": ["vehicleMotion"],
+                    "payload": {
+                        "direction": "left"
+                    }
+                });
+            }
+        }
+    }
+
+    // Allow global simulation tick to control minigame time
+    export function tick(globalTickTime) {
+        // [TODO] Implement minigame tick function
+    }
 
     //canvas stuff for minigame
     let canvas; //the canvas object
     let canvasContext; //the canvas context object
     let canvasDims = { //canvas dimensions
-        w: 800, //width
-        h: 400 //height
+        w: props.canvasDimensions.width,
+        h: props.canvasDimensions.height
     };
     let widthSpaces = 12; //12-1? spaces across the board to move //columns in objMiniGameSimulation
     let heightSpaces = 10 //10-1? spaces of objects of height same as userDim.h
@@ -30,6 +108,43 @@
         [1,0,0,0,0,0,0,1,0,0,1,0],
         [0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,1,0,1,0,0,1,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,0,1,0,0,1,0,0,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,0,1,0,0,0,1,1,0,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,0,0,1,0,1,0,1,0,0,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,1,0,0,1,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,0,0,0,0,0,0,1,0,0,1,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,0,1,0,0,1,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,0,1,0,0,1,0,0,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,0,1,0,0,0,1,1,0,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,0,0,1,0,1,0,1,0,0,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,1,0,0,1,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,0,0,0,0,0,0,1,0,0,1,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,0,1,0,0,1,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,0,1,0,0,1,0,0,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,0,1,0,0,0,1,1,0,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,0,0,1,0,1,0,1,0,0,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,1,0,0,1,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,0,0,0,0,0,0,1,0,0,1,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,0,1,0,0,1,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
         [1,0,1,0,0,1,0,0,1,1,0,0],
         [0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,1,0,1,0,0,0,1,1,0,1],
@@ -45,12 +160,23 @@
     let score = 0; //score of the minigame //each time it is changed add it to the times array
 
     //record the time event and print it out
-    function recordEvent(eventN, time) {
+    function recordEvent(eventN, time, payload=null) {
         times.push({
             "Event Name": eventN,
             "Time": time
         });
-        console.log(times[times.length-1]['Event Name'] + ": " + times[times.length-1]['Time']);
+
+        /* Emit message that the vehicle has moved to the left
+         * Note: This basically treats the recordEvent function as a wrapper/shim for message dispatching
+         */
+        dispatch('message', {
+            "timestamp": time,
+            "name": eventN,
+            "category": "minigameevent",
+            "intendedTarget": null,
+            "tags": [],
+            "payload": payload
+        });
     }
 
     //function to do clash calculation
@@ -73,7 +199,7 @@
                         objRef.hit = true;
                         objRef.finished = true;
                         score -= 1;
-                        recordEvent("Clash", Date.now());
+                        recordEvent("vehicleClash", Date.now(), {"score": score.valueOf()});
                     }
                 }
             }
@@ -123,7 +249,7 @@
                     score -= 1;
                     this.hit = true;
                     this.finished = true;
-                    recordEvent("Clash", Date.now());
+                    recordEvent("vehicleClash", Date.now(), {"score": score.valueOf()});
                     return;
                 }
             }
@@ -133,7 +259,7 @@
                 // console.log(userDim);
                 // console.log(this);
                 score += 1;
-                recordEvent("Scored Point", Date.now());
+                recordEvent("vehicleScore", Date.now(), {"score": score.valueOf()});
                 this.finished = true;
             }
         }
@@ -169,28 +295,6 @@
     onMount(() => {
         // console.log("inside onMount function")
         drawCanvas();
-        document.addEventListener('keydown', function (event) {
-            // console.log(event);
-            if (event.key === 'd') {
-                console.log("right");
-                if(userDim.currX + canvasDims.w/widthSpaces < canvasDims.w - canvasDims.w/widthSpaces) {
-                    moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, canvasDims.w / widthSpaces, 0, "car");
-                    userDim.currX += canvasDims.w / widthSpaces;
-                    // console.log(userDim.currX);
-                }
-                checkClashFromUser();
-            }
-            if (event.key === 'a') {
-                console.log("left");
-                if(userDim.currX - canvasDims.w/widthSpaces > 0) {
-                    moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, -canvasDims.w / widthSpaces, 0, "car");
-                    userDim.currX += -canvasDims.w / widthSpaces;
-                    // console.log(userDim.currX);
-                }
-                checkClashFromUser();
-            }
-            // add other event keys
-        });
 
         // create objects
         createObj();
@@ -215,7 +319,6 @@
                 activeRow = 0;
                 clearInterval(intervalID);
                 createObj();
-                intervalID = setInterval(interval, 1000);
             }
         }
     }
@@ -239,8 +342,8 @@
     }
 
     let start = () => {
-        recordEvent("Started Game At", Date.now());
-        intervalID = setInterval(interval, 1000);
+        recordEvent("startedMiniGame", Date.now());
+        intervalID = setInterval(interval, props.tempRefreshTimer);
         document.getElementById("game").removeAttribute("hidden");
         document.getElementById("startButton").remove();
     }
@@ -257,7 +360,7 @@
 <div class="minigame-container">
 
     <!-- Start the simulation button -->
-    <!-- [FIXME] This should be removed in favor of an all-encompassing simulation start button -->
+    <!-- [FIXME] This start button should be removed in favor of an all-encompassing simulation start button -->
     <button on:click={start} id="startButton">Start the MiniGame</button>
 
     <!-- img to be used as the main user in the simulation in the canvas -->
