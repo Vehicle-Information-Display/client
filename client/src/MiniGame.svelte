@@ -189,6 +189,10 @@
                 }
                 checkClashFromUser();
             }
+            if (event.key === 's') {
+                console.log("slow down");
+                checkClashFromUser();
+            }
             // add other event keys
         });
 
