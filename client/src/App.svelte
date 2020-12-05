@@ -363,7 +363,7 @@
 <!--        </div>-->
     </div>
 
-    { #if props.instructionData.display }
+    {#if props.instructionData.display}
         <div class="instruction-container">
             <Instruction on:message={handleDispatchedEvent} bind:props={props.instructionData} />
         </div>
