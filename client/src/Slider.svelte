@@ -1,12 +1,13 @@
 <script>
     import { onMount, tick } from 'svelte';
       import { createEventDispatcher } from 'svelte';
-      import MusicScreen from "./musicScreen.svelte"; 
+      import MusicScreen, {onPlayerReady} from './musicScreen.svelte';
       const dispatch = createEventDispatcher();
       export let min = 0;
       export let max = 100;
       export let step = 2;
       export let current = 3;
+
       let sliding = false;
       let slider;
       let scale;
@@ -26,6 +27,7 @@
               const distance = e.clientX - slider.getBoundingClientRect().left
           const value = Math.round((distance / scale)) * step;
           current = Math.max(Math.min(value, max), min);
+          onPlayerReady("mousedown", current);
           console.log(current);
           }
       }
@@ -93,6 +95,8 @@
 		background-color: #9e67e6;
 	}
 
+    #play-button {
+    }
   </style>
   
   <svelte:body
@@ -108,7 +112,7 @@
            aria-valuenow={current}
            aira-orientation="horizontal"
            role="slider"
-           bind:this={slider} class="slider" on:mousedown={handleMouseDown} on:keydown={handleKeydown} >
+           bind:this={slider} class="slider" id="slider" on:mousedown={handleMouseDown} on:keydown={handleKeydown} >
       <div class="rail">
           <div class="ball" style="left: calc({current / max * 100}% - 8.5px)">
           </div>
