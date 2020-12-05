@@ -1,6 +1,7 @@
 <script>
     import { onMount, tick } from 'svelte';
       import { createEventDispatcher } from 'svelte';
+      import MusicScreen from "./musicScreen.svelte"; 
       const dispatch = createEventDispatcher();
       export let min = 0;
       export let max = 100;
@@ -57,40 +58,41 @@
   
   <style>
       .slider {
-          position: relative;
-          width: 90%;
-          height: 30px;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-      }
-      
-      .rail {
-          width: 100%;
-          height: 8px;
-          background-color: #eaeaea;
-          border-radius: 8px;
-          overflow: hidden;
-      }
-      
-      .fill {
-          width: 100%;
-          height: 8px;
-          background-color: #fdff8c;
-          transform-origin: left;
-          transform: scaleX(0);
-      }
-      
-      .ball {
-          position: absolute;
-          z-index: 2;
-          top: calc(50% - 8.5px);
-          left: -3px;
-          width: 17px;
-          height: 17px;
-          border-radius: 50%;
-          background-color: #b5b80e;
-      }
+		position: relative;
+		width: 90%;
+		height: 30px;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+	}
+	
+	.rail {
+		width: 100%;
+		height: 8px;
+		background-color: #eaeaea;
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	
+	.fill {
+		width: 100%;
+		height: 8px;
+		background-color: #362b9c;
+		transform-origin: left;
+		transform: scaleX(0);
+	}
+	
+	.ball {
+		position: absolute;
+		z-index: 2;
+		top: calc(50% - 8.5px);
+		left: -3px;
+		width: 17px;
+		height: 17px;
+		border-radius: 50%;
+		background-color: #9e67e6;
+	}
+
   </style>
   
   <svelte:body
@@ -98,7 +100,8 @@
    on:mouseup={handleMouseup}
    on:mouseleave={handleMouseup}
   />
-  <div 
+
+  <div
            tabindex="0"
                aria-valuemax={max}
            aria-valuemin={min}
@@ -114,3 +117,5 @@
           </div>
       </div>
   </div>
+  
+  
