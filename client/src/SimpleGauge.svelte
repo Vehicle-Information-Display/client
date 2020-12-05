@@ -84,7 +84,7 @@
         {/each}
 
         <!-- Needle -->
-        <g transform='rotate({6 * (springedValue - 25)})'>
+        <g transform='rotate({6 * ($springedValue - 25)})'>
             <line class='needle' y1='10' y2='-38'/>
             <line class='needle-counterweight' y1='10' y2='-20'/>
         </g>
