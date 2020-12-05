@@ -359,7 +359,7 @@
 <div class="allDash-container">
     <div class="wheelArea-container">
         <div class="behindWheelScreen-container">
-            <div class="textAlert-container">ALERT</div>
+            <div class="textAlert-container">{values.alertBar}</div>
             <div class="rpm-container">
                 <fontSize>RPM</fontSize>
                 <SimpleGauge bind:props={tachometerProps}/>
