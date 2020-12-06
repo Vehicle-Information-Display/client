@@ -22,7 +22,7 @@
             const instructions = [];
 
             // Event cache
-            console.log(globalEventCache);
+            // console.log(globalEventCache);
 
             // Send run records to server
             sendSimulationRun(url, uid, dashboardLayout, instructions, globalEventCache);
