@@ -199,52 +199,6 @@
         document.getElementById('startButton').style.display = "none";
     }
 
-    let rotWhlRight = () => {
-        console.log("Turning Wheel Right...");
-        props.dashboardValues.wheelRotation += 3;
-        console.log(props.dashboardValues.wheelRotation);
-    };
-
-    let rotWhlLeft = () => {
-        console.log("Turning Wheel Left...");
-        props.dashboardValues.wheelRotation -= 3;
-        console.log(props.dashboardValues.wheelRotation);
-    };
-
-    let changeSeatWarmerLeft = () => {
-        if (props.dashboardValues.seatWarmerLeft == "warm") {
-            props.dashboardValues.seatWarmerLeft = "off";
-            console.log("Left Seat Changed from warm to cool");
-        } else if (props.dashboardValues.seatWarmerLeft == "cool") {
-            props.dashboardValues.seatWarmerLeft = "warm";
-            console.log("Left Seat Changed from cool to warm");
-        } else {
-            props.dashboardValues.seatWarmerLeft = "cool";
-            console.log("Left Seat Changed from off to cool");
-        }
-    };
-
-    let changeSeatWarmerRight = () => {
-        if (props.dashboardValues.seatWarmerRight == "warm") {
-            props.dashboardValues.seatWarmerRight = "off";
-            console.log("Right Seat Changed from warm to cool");
-        } else if (props.dashboardValues.seatWarmerRight == "cool") {
-            props.dashboardValues.seatWarmerRight = "warm";
-            console.log("Right Seat Changed from cool to warm");
-        } else {
-            props.dashboardValues.seatWarmerRight = "cool";
-            console.log("Right Seat Changed from off to cool");
-        }
-    };
-
-    let changeHazardLightStatus = () => {
-        if(props.dashboardValues.hazardLights == false){
-            props.dashboardValues.hazardLights = true;
-        } else{
-            props.dashboardValues.hazardLights = false
-        }
-    }
-
     // --[ Layouts Setup ]--
     const layouts = [
         { name: "SimpleDash", component: SimpleDash }
