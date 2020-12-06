@@ -1,6 +1,9 @@
 <script>
     //when mounted then do stuff function
-    import { onMount, createEventDispatcher } from "svelte";
+    import { onMount, onDestroy, createEventDispatcher } from "svelte";
+
+    // Import Current Scenario Information Store
+    import { simulationScenarioStore } from "./stores";
 
     // Create event dispatcher
     const dispatch = createEventDispatcher();
@@ -9,6 +12,13 @@
      * Note: For external message passing only
      */
     export let props = {}
+
+    // Get simulation-specific data from the global current-scenario store
+    let blockData;
+    const unsubScenarioData = simulationScenarioStore.subscribe(value => {
+        blockData = value.minigameBlocks;
+    });
+    onDestroy(unsubScenarioData);   // Avoid a memory leak
 
     // Allow parent components to call this component's event handler
     export function handleMessage(message) {
@@ -75,9 +85,18 @@
         }
     }
 
-    // Allow global simulation tick to control minigame time
+    /* Allow global simulation tick to control minigame time
+     * Note: Tick should only start being called once the simulation
+     * has started! Therefore, no start check is necessary.
+     */
     export function tick(globalTickTime) {
-        // [TODO] Implement minigame tick function
+        // Un-hide the simulation
+        // [FIXME] This should probably be removed so the MiniGame window is always visible
+        // [FIXME] This should also probably be handled by an event handler as it should only be called once!
+        document.getElementById("game").removeAttribute("hidden");
+
+        // Call interval function
+        interval();
     }
 
     //canvas stuff for minigame
@@ -98,59 +117,7 @@
     //columns are widthSpaces, 0 are no object creation, 1 are object creation.
     //Rows spawn everytime space is available
     //First IN Last OUT
-    let objMiniGameSimulation = [
-        [0,0,0,1,0,0,1,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,1,0,0,1,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,0,0,0,0,0,1,0,0,1,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,1,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,1,0,0,1,0,0,1,1,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,0,1,1,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,0,0,1,0,1,0,1,0,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,1,0,0,1,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,0,0,0,0,0,1,0,0,1,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,1,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,1,0,0,1,0,0,1,1,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,0,1,1,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,0,0,1,0,1,0,1,0,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,1,0,0,1,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,0,0,0,0,0,1,0,0,1,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,1,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,1,0,0,1,0,0,1,1,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,0,1,1,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,0,0,1,0,1,0,1,0,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,1,0,0,1,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,0,0,0,0,0,1,0,0,1,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,1,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,1,0,0,1,0,0,1,1,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,0,1,1,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,0,0,1,0,1,0,1,0,0,1]
-    ];
+    let objMiniGameSimulation = blockData;
     let activeRow = 0;
 
     let intervalID;
@@ -340,13 +307,6 @@
         userDim.currY = (canvasDims.h) - (userDim.h);
         canvasContext.drawImage(img, userDim.currX, userDim.currY, userDim.w, userDim.h);
     }
-
-    let start = () => {
-        recordEvent("startedMiniGame", Date.now());
-        intervalID = setInterval(interval, props.tempRefreshTimer);
-        document.getElementById("game").removeAttribute("hidden");
-        document.getElementById("startButton").remove();
-    }
 </script>
 
 <style>
@@ -358,11 +318,6 @@
 </style>
 
 <div class="minigame-container">
-
-    <!-- Start the simulation button -->
-    <!-- [FIXME] This start button should be removed in favor of an all-encompassing simulation start button -->
-    <button on:click={start} id="startButton">Start the MiniGame</button>
-
     <!-- img to be used as the main user in the simulation in the canvas -->
     <img on:load={drawIm} id="car" hidden src="img/car.png" width="0px" height="0px" alt="">
     <img id="carObj" hidden src="img/objcar.png" width="0px" height="0px" alt="">

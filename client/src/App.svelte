@@ -1,5 +1,5 @@
 <script>
-    // --[ Imports ]--
+    // --[ Core Imports ]--
 	import {
 		simulationTick,
 		simulationSendMessage,
@@ -7,10 +7,12 @@
 	} from "./simulation";
     import { globalEventCache, simulationDataStore, simulationScenarioStore } from "./stores";
     import Instrumentation from './Instrumentation.svelte';
-    import SimpleDash from './SimpleDash.svelte';
-	import Instruction from "./instruction.svelte";
-	import Game from "./game.svelte";
+	import Instruction from "./Instruction.svelte";
 	import MiniGame from './MiniGame.svelte';
+	import Modal from './Modal.svelte';
+
+	// --[ Layout/Scenario Imports ]--
+    import SimpleDash from './SimpleDash.svelte';
 
 	// --[ Scenario Imports ]--
 	import { testScenario } from './scenarios/testScenario';
@@ -20,24 +22,106 @@
     // [HACK] This is a workaround for passing messages to children
     let messageRecipients = [];
 
-	// --[ App Props ]--
-	let canvas;
-	let game = { status: "on" };
-	let instruction = { status: "on" };
+    // Will store the variable referencing the global tick interval caller
+    let globalTickInterval;
 
+    // --[ User Registration Handling ]--
+
+    // By default, we want the user registration modal to show up above everything else
+    let showUserRegModal = true;
+
+    // By default, the spinner should be hidden
+    let showSpinner = false;
+
+    // Placeholder user info
+    let userName = undefined;
+    let userEmail = undefined;
+
+    // Error messages
+    let regError;
+
+    // Function to actually run the registration
+    function userRegister() {
+        // Check for errors
+        if (userName === undefined || userName === null || userName == "") {
+            regError = "Name is not valid!";
+            return;
+        } else if (userEmail === undefined || userName === null || userEmail == "") {
+            regError = "Email is not valid!";
+            return;
+        }
+
+        // Show the spinner before the async call
+        showSpinner = true;
+
+        // Build the request body
+        const body = {
+            "type": "insertUser",
+            "name": userName,
+            "email": userEmail
+        }
+
+        // Make async call
+        // Send the request
+        fetch($simulationDataStore.serverInfo.serverURL, {
+            method: "POST",
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify(body)
+        }).then(res => res.json()).then(res => {
+            // Get uid from the returned JSON object
+            const uid = res.user_id;
+
+            // [FIXME] Remove this response logging in production
+            console.log("[DEBUG] Sent new user request to server, got uid: " + uid);
+
+            // Update the UID in the simulation data store
+            simulationDataStore.update(ex => {
+                ex.serverInfo.uid = uid;
+                return ex;
+            });
+
+            // Emit event notifying the completion of the registration flow
+            handleMessage({
+                "timestamp": Date.now(),
+                "name": "userRegistrationComplete",
+                "category": "userevent",
+                "intendedTarget": "records",
+                "tags": ["registration", "server"],
+                "payload": {
+                    "userId": uid
+                }
+            });
+
+            // Hide the modal and spinner when done
+            showSpinner = false;
+            showUserRegModal = false;
+        });
+    }
+
+	// --[ App Props ]--
 	let props = {
 		"name": "Simple Dashboard",
         "tickTime": 500,
         "instrumentationData": {
             "messageCallback": handleMessage
         },
-		"dashboardData": null,
         "minigameData": {
 		    "tempRefreshTimer": 500,
 		    "canvasDimensions": {
 		        "width": 800,
                 "height": 400
             }
+        },
+        "instructionData": {
+		    "display": true,
+		    "currentInstruction": "",
+            "alertDuration": 1500
         }
 	}
 
@@ -140,15 +224,40 @@
 
 	// --[ Global Simulation Setup ]--
 
-	// Define the scenario to use within the simulation
-	simulationScenarioStore.update((sc) => {
-		return testScenario;
-	});
-
 	// Register a callback function to handle messages thrown by the simulation
 	simulationRegisterMessageToApp((messageToApp) => {
 		console.debug("[DEBUG] Received a message from the simulation!");
-		console.debug(messageToApp);
+		// console.debug(messageToApp);
+
+		// Check if the simulation has finished
+        if (messageToApp.name == "majorEvent" && messageToApp.payload.eventValue == "end") {
+            console.debug("[DEBUG] RECEIVED END OF THE SIMULATION!");
+
+            // Stop simulation tick
+            clearInterval(globalTickInterval);
+
+            /* Submit data to server
+             * Note: This is done by emitting a message that is handled by the Instrumentation system
+             */
+            handleMessage({
+                "timestamp": messageToApp.timestamp,
+                "name": messageToApp.name,
+                "category": messageToApp.category,
+                "intendedTarget": "instrumentation",
+                "payload": {
+                    "eventValue": messageToApp.payload.eventValue,
+                    "scenarioState": JSON.parse(JSON.stringify($simulationScenarioStore))  // [HACK] Just want to get a snapshot of state
+                }
+            });
+
+            // [FIXME] Remove this alert once a more elegant solution is implemented
+            alert("You have completed this scenario. Please move onto the next one, if it exists.");
+        }
+
+        // In the general case, use the standard-format event handler
+        else {
+            handleMessage(messageToApp);
+        }
 	});
 
 	// Global Tick Count (Used for "global time")
@@ -179,100 +288,40 @@
 		globalTickCount++;
 	}
 
-	// Call tick every 500 milliseconds
-	setInterval(globalTick, props.tickTime);
+    // Global Simulation Start
+    function startSimulation() {
+	    // Emit an event signalling the start of the simulation
+        handleMessage({
+            "timestamp": Date.now(),
+            "name": "simulationStart",
+            "category": "majorevent",
+            "intendedTarget": null,
+            "tags": ["App"],
+            "payload": {}
+        });
 
-	// --[ Dashboard Tests ]--
+        // Start ticking in the simulation
+        globalTickInterval = setInterval(globalTick, props.tickTime);
 
-	// Update properties when simulationData updates
-	const unsubscribe = simulationDataStore.subscribe(data => {
-		props.dashboardData = data;
-	});
-
-	// Increment the speed
-	let incSpd = () => {
-		console.debug("[DEBUG] Incrementing speed..." + props.dashboardData.speed);
-		// props.dashboardValues.speed += 1;
-		let message = {
-			"timestamp" : Date(),
-			"name" : "Test",
-			"category" : "simulation_instruction",
-			"intendedTarget" : "simulation_core",
-			"tags" : ["simulation_status_change"],
-			"payload" : {
-				"instruction": "setSpeed",
-				"value": parseInt(props.dashboardData.speed) + 1,
-			}
-		}
-
-		// Send message to the simulation
-		simulationSendMessage(message)
-	}
-
-	let incRPM = () => {
-		console.debug("[DEBUG] Incrementing RPM...");
-		// props.dashboardValues.rpm += 1000;
-		let message = {
-			"timestamp" : Date(),
-			"name" : "Test",
-			"category" : "simulation_instruction",
-			"intendedTarget" : "simulation_core",
-			"tags" : ["simulation_status_change"],
-			"payload" : {
-				"instruction": "setRPM",
-				"value": parseInt(props.dashboardData.rpm) + 1,
-			}
-		}
-
-		// Send message to the simulation
-		simulationSendMessage(message)
-	}
-
-    let rotWhlRight = () => {
-        console.log("Turning Wheel Right...");
-        props.dashboardValues.wheelRotation += 3;
-        console.log(props.dashboardValues.wheelRotation);
-    };
-
-    let rotWhlLeft = () => {
-        console.log("Turning Wheel Left...");
-        props.dashboardValues.wheelRotation -= 3;
-        console.log(props.dashboardValues.wheelRotation);
-    };
-
-    let changeSeatWarmerLeft = () => {
-        if (props.dashboardValues.seatWarmerLeft == "warm") {
-            props.dashboardValues.seatWarmerLeft = "off";
-            console.log("Left Seat Changed from warm to cool");
-        } else if (props.dashboardValues.seatWarmerLeft == "cool") {
-            props.dashboardValues.seatWarmerLeft = "warm";
-            console.log("Left Seat Changed from cool to warm");
-        } else {
-            props.dashboardValues.seatWarmerLeft = "cool";
-            console.log("Left Seat Changed from off to cool");
-        }
-    };
-
-    let changeSeatWarmerRight = () => {
-        if (props.dashboardValues.seatWarmerRight == "warm") {
-            props.dashboardValues.seatWarmerRight = "off";
-            console.log("Right Seat Changed from warm to cool");
-        } else if (props.dashboardValues.seatWarmerRight == "cool") {
-            props.dashboardValues.seatWarmerRight = "warm";
-            console.log("Right Seat Changed from cool to warm");
-        } else {
-            props.dashboardValues.seatWarmerRight = "cool";
-            console.log("Right Seat Changed from off to cool");
-        }
-    };
-
-    let changeHazardLightStatus = () => {
-        if(props.dashboardValues.hazardLights == false){
-            props.dashboardValues.hazardLights = true;
-        } else{
-            props.dashboardValues.hazardLights = false
-        }
+        // Hide the start button after starting simulation
+        document.getElementById('startButton').style.display = "none";
     }
+
+    // --[ Scenario & Layouts Setup ]--
+
+    // Define the scenario to use within the simulation
+    // [TODO] The scenario should be hot-swappable!
+    simulationScenarioStore.update((sc) => {
+        return testScenario;
+    });
+
+	// Create a map of Layouts and their respective components
+	const layouts = new Map([
+        ["SimpleDash", SimpleDash]
+    ]);
+
+	// Specify which component should be used by grabbing the layout name from the scenario-specific store
+    let selectedLayout = layouts.get($simulationScenarioStore.layout);
 </script>
 
 <style>
@@ -303,12 +352,8 @@
     }
 
     .instruction-container {
-        display: grid;
-        grid-row: gameRow-end instuctionRow-start / instructionRow-end
-            dash-start;
         border: 7px solid skyblue;
         border-radius: 25px;
-        position: relative;
     }
 
     .dashArea-container {
@@ -344,10 +389,42 @@
     }
 </style>
 
-<Instrumentation globalEventCache={globalEventCache} bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:props={props.instrumentationData} />
+<!-- User Registration Modal -->
+{#if showUserRegModal}
+    <Modal on:close="{() => showUserRegModal = false}">
+        <h2 slot="header">Register</h2>
+
+        <div>
+            <input bind:value={userName} placeholder="Enter your name">
+            <input bind:value={userEmail} placeholder="Enter your email">
+        </div>
+
+        <p>Thank you, {userName || 'stranger'}! Click the register button below when ready.</p>
+
+        {#if regError}
+            <p style="color: red; border: 1px solid red; padding: 1px;">{regError}</p>
+        {/if}
+
+        {#if showSpinner}
+            <div>
+                <img src="img/spinner.gif" height="100px" width="auto" alt="waiting...">
+            </div>
+        {/if}
+
+        <button autofocus on:click={userRegister}>Register</button>
+    </Modal>
+{/if}
+
+<!-- [TODO] Change the styles of the start button to be less amateurish -->
+<button on:click={startSimulation} id="startButton">Start the Simulation</button>
+
+<!-- Instrumentation Component: Contains no visible elements -->
+<Instrumentation globalEventCache={$globalEventCache} bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:props={props.instrumentationData} />
+
+<!-- Primary Dashboard UI Section -->
 <main>
     <div class="dashArea-container">
-        <SimpleDash bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={props.dashboardData} />
+        <svelte:component this={selectedLayout} bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={$simulationDataStore} />
     </div>
     <div class="game-container">
         <MiniGame bind:this={messageRecipients[2]} on:message={handleDispatchedEvent} bind:props={props.minigameData} />
@@ -365,10 +442,12 @@
 <!--        </div>-->
     </div>
 
-<!--    <div class="instruction-container">-->
-<!--        <Instruction on:message={handleDispatchedEvent} bind:Instruction={instruction} />-->
-<!--    </div>-->
-    <!-- <div class="message-container"> -->
-    <!-- <Outer on:message={handleDispatchedEvent}/> -->
-    <!-- </div> -->
+    {#if props.instructionData.display}
+        <div class="instruction-container">
+            <Instruction on:message={handleDispatchedEvent} bind:props={props.instructionData} />
+        </div>
+    {/if}
+<!--     <div class="message-container"> -->
+<!--     <Outer on:message={handleDispatchedEvent}/> -->
+<!--     </div> -->
 </main>

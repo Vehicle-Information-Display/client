@@ -1,8 +1,19 @@
 <script>
+    import { spring } from 'svelte/motion';
+
     export let props = {
         "name": "Unknown",
         "value": 0
     }
+
+    // Create a spring-effect for the value
+    let springedValue = spring(0, {
+        stiffness: 0.1,
+        dampening: 0.01
+    });
+
+    // Update springed value when props update
+    $: springedValue.set(props.value);
 </script>
 
 <style>
@@ -73,7 +84,7 @@
         {/each}
 
         <!-- Needle -->
-        <g transform='rotate({6 * (props.value - 25)})'>
+        <g transform='rotate({6 * ($springedValue - 25)})'>
             <line class='needle' y1='10' y2='-38'/>
             <line class='needle-counterweight' y1='10' y2='-20'/>
         </g>

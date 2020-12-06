@@ -22,9 +22,12 @@ let simulationRegisterMessageToApp = function (callback) {
 let simulationTick = function(globalTickTime) {
 
     // Check if an instruction is scheduled to run at the current time
-    if (simulationScenario.has(globalTickTime)) {
-        const instructionWrapper = simulationScenario.get(globalTickTime);
-        handleInstruction(instructionWrapper.instruction, instructionWrapper.value);
+    const instructions = simulationScenario.instructions
+    if (instructions.has(globalTickTime)) {
+        const instructionWrapper = instructions.get(globalTickTime);
+        for (const i in instructionWrapper) {
+            handleInstruction(instructionWrapper[i].instruction, instructionWrapper[i].value);
+        }
     }
 }
 
@@ -44,17 +47,247 @@ let simulationSendMessage = function (message) {
 
 // Handles a documented simulation instruction
 let handleInstruction = function (instruction, value) {
-    switch (instruction) {
-        case "setSpeed":
-            console.debug("[DEBUG] Received setSpeed instruction for: " + value);
-            simulationDataStore.update((sd) => {
-                sd.speed = parseInt(value);
-                return sd;
-            });
-            break;
-        default:
-            console.debug("[ERROR] Simulation received undocumented or invalid instruction!");
-            break;
+    try {
+        switch (instruction) {
+            case "setSpeed":
+                try {
+                    console.debug("[DEBUG] Received setSpeed instruction for: " + value);
+                    simulationDataStore.update((sd) => {
+                        sd.speed = parseInt(value);
+                        return sd;
+                    });
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing setSpeed instruction: " + error);
+                }
+                break;
+
+            case "setRPM":
+                try {
+                    console.debug("[DEBUG] Received setRPM instruction for: " + value);
+                    simulationDataStore.update((sd) => {
+                        sd.engineRPM = parseInt(value);
+                        return sd;
+                    });
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing setRPM instruction: " + error);
+                }
+                break;
+
+            case "setFuelLevel":
+                try {
+                    console.debug("[DEBUG] Received setFuelLevel instruction for: " + value);
+                    simulationDataStore.update((sd) => {
+                        sd.fuelLevelPercent = parseInt(value);
+                        return sd;
+                    });
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing setFuelLevel instruction: " + error);
+                }
+                break;
+
+            case "setTurnIndicator":
+                try {
+                    console.debug("[DEBUG] Received setTurnIndicator instruction for: " + value);
+                    simulationDataStore.update((sd) => {
+                        sd.turnIndicatorStatus = value;
+                        return sd;
+                    });
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing setTurnIndicator instruction: " + error);
+                }
+                break;
+
+            case "emitInstruction":
+                try {
+                    console.debug("[DEBUG] Received emitInstruction instruction for: " + value);
+                    messageToApp({
+                        "timestamp": Date.now(),
+                        "name": "emitInstruction",
+                        "category": "simulationevent",
+                        "intendedTarget": "app",
+                        "tags": ["instruction"],
+                        "payload": {
+                            "instruction": value
+                        }
+                    });
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing emitInstruction instruction: " + error);
+                }
+                break;
+
+            case "setAlert":
+                try {
+                    console.debug("[DEBUG] Received setAlert instruction for: " + value);
+                    simulationDataStore.update((sd) => {
+                        sd.alertBar = value;
+                        return sd;
+                    });
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing setAlert instruction: " + error);
+                }
+                break;
+
+            case "setAnnunciator":
+                try {
+                    console.debug("[DEBUG] Received setAnnunciator instruction for ID: " + value.ID + " value: " + value.value);
+                    switch (value.ID) {
+                        case "engineOverheat":
+                            simulationDataStore.update((sd) => {
+                                sd.annunciatorLights.engineOverheat = value.value;
+                                return sd;
+                            });
+                            break;
+                        case "lowTirePressure":
+                            simulationDataStore.update((sd) => {
+                                sd.annunciatorLights.lowTirePressure = value.value;
+                                return sd;
+                            });
+                            break;
+                        case "lowBatteryLevel":
+                            simulationDataStore.update((sd) => {
+                                sd.annunciatorLights.lowBatteryLevel = value.value;
+                                return sd;
+                            });
+                            break;
+                        case "checkEngine":
+                            simulationDataStore.update((sd) => {
+                                sd.annunciatorLights.checkEngine = value.value;
+                                return sd;
+                            });
+                            break;
+                        case "headlights":
+                            simulationDataStore.update((sd) => {
+                                sd.annunciatorLights.headlights = value.value;
+                                return sd;
+                            });
+                            break;
+                        case "highBeams":
+                            simulationDataStore.update((sd) => {
+                                sd.annunciatorLights.highBeams = value.value;
+                                return sd;
+                            });
+                            break;
+                        case "doorsUnlocked":
+                            simulationDataStore.update((sd) => {
+                                sd.annunciatorLights.doorsUnlocked = value.value;
+                                return sd;
+                            });
+                            break;
+                        default:
+                            console.warn("[WARN] Received unimplemented setAnnunciator ID: " + value.ID);
+                            break;
+                    }
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing setAnnunciator instruction: " + error);
+                }
+                break;
+
+            case "setWeather":
+                try {
+                    console.debug("[DEBUG] Received setWeather instruction for: " + value);
+                    simulationDataStore.update((sd) => {
+                        sd.weather.weatherType = value;
+                        return sd;
+                    });
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing setWeather instruction: " + error);
+                }
+                break;
+
+            case "setOutdoorTemp":
+                try {
+                    console.debug("[DEBUG] Received setOutdoorTemp instruction for: " + value);
+                    simulationDataStore.update((sd) => {
+                        sd.weather.temperature = parseInt(value);
+                        return sd;
+                    });
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing setOutdoorTemp instruction: " + error);
+                }
+                break;
+
+            case "setBluetooth":
+                try {
+                    console.debug("[DEBUG] Received setBluetooth instruction for: " + value);
+                    simulationDataStore.update((sd) => {
+                        sd.infotainment.phoneConnected = value;
+                        return sd;
+                    });
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing setBluetooth instruction: " + error);
+                }
+                break;
+
+            case "setMediaStatus":
+                try {
+                    console.debug("[DEBUG] Received emitAlert instruction for playstatus: " + value.playStatus + " skip: " + value.skipVal);
+                    if (value.playStatus == "stopped") {
+                        simulationDataStore.update((sd) => {
+                            sd.infotainment.mediaPlaying = false;
+                            return sd;
+                        });
+                    } else {
+                        // If not stopped, then media _should_ be playing
+                        simulationDataStore.update((sd) => {
+                            sd.infotainment.mediaPlaying = true;
+                            return sd;
+                        });
+
+                        // Fire a Play Status change event
+                        simulationSendMessage({
+                            "timestamp": Date.now(),
+                            "name": "playMedia",
+                            "category": "simulationevent",
+                            "intendedTarget": "infotainment",
+                            "tags": ["playstatus"],
+                            "payload": {
+                                "playStatus": value.playStatus
+                            }
+                        });
+
+                        // If the instruction contains a skip, fire a media skip event
+                        if (value.skipVal != 0) {
+                            simulationSendMessage({
+                                "timestamp": Date.now(),
+                                "name": "skipMedia",
+                                "category": "simulationevent",
+                                "intendedTarget": "infotainment",
+                                "tags": ["mediaskip"],
+                                "payload": {
+                                    "skip": value.skipVal
+                                }
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing setMediaStatus instruction: " + error);
+                }
+                break;
+
+            case "emitMajorEvent":
+                try {
+                    console.debug("[DEBUG] Received emitMajorEvent instruction for: " + value);
+                    messageToApp({
+                        "timestamp": Date.now(),
+                        "name": "majorEvent",
+                        "category": "simulationevent",
+                        "intendedTarget": "app",
+                        "tags": ["instruction", "major"],
+                        "payload": {
+                            "eventValue": value
+                        }
+                    });
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing emitMajorEvent instruction: " + error);
+                }
+                break;
+
+            default:
+                console.debug("[ERROR] Simulation received undocumented or invalid instruction!");
+                break;
+        }
+    } catch (error) {
+        console.error("[ERROR] An error occurred while attempting to handle an instruction: " + error);
     }
 }
 

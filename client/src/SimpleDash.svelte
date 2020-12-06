@@ -3,10 +3,10 @@
     import SimpleGauge from "./SimpleGauge.svelte";
     import Clock from "./Clocks.svelte";
     import HazardLights from "./HazardLights.svelte";
-    import TackySun from "./tackySun.svelte";
-    import ClimateControl from "./climateControl.svelte";
+    import TackySun from "./TackySun.svelte";
+    import ClimateControl from "./ClimateControl.svelte";
     import CogWheel from "./Cogwheel.svelte";
-    import Temperature from "./tempModule.svelte";
+    import Temperature from "./TempModule.svelte";
     import MusicControls from "./MusicControls.svelte";
     import SteeringWheel from "./SteeringWheel.svelte";
     import SeatWC from "./SeatWarmer.svelte";
@@ -47,7 +47,7 @@
 
     $:tachometerProps = {
         "name": "Tachometer",
-        "value": values.rpm / 200
+        "value": values.engineRPM / 200
     }
 
     // $: rpmProps = {
@@ -359,7 +359,7 @@
 <div class="allDash-container">
     <div class="wheelArea-container">
         <div class="behindWheelScreen-container">
-            <div class="textAlert-container">ALERT</div>
+            <div class="textAlert-container">{values.alertBar}</div>
             <div class="rpm-container">
                 <fontSize>RPM</fontSize>
                 <SimpleGauge bind:props={tachometerProps}/>

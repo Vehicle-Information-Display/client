@@ -13,10 +13,15 @@ export const globalEventCache = {
 
 // Base Simulation Inter-Component Data Store
 export let simulationDataStore = writable({
-    "speed": "10",               // Measured in miles per hour
+    "serverInfo": {
+        "uid": undefined,
+        "serverURL": "http://localhost:8080"
+    },
+    "speed": "10",                 // Measured in miles per hour
     "engineRPM": "1000",           // Measured in revolutions per second
-    "fuelLevelPercent": "100",  // Measured in percentage of a full tank
+    "fuelLevelPercent": "100",     // Measured in percentage of a full tank
     "turnIndicatorStatus" : "OFF", // Options: LEFT, OFF, RIGHT
+    "alertBar": "",                // By default, there shouldn't be any text displayed, so empty
     "annunciatorLights" : {
         "engineOverheat": "false",
         "lowTirePressure" : "false",
