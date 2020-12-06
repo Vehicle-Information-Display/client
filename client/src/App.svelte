@@ -156,10 +156,27 @@
             // Stop simulation tick
             clearInterval(globalTickInterval);
 
+            /* Submit data to server
+             * Note: This is done by emitting a message that is handled by the Instrumentation system
+             */
+            handleMessage({
+                "timestamp": messageToApp.timestamp,
+                "name": messageToApp.name,
+                "category": messageToApp.category,
+                "intendedTarget": "instrumentation",
+                "payload": {
+                    "eventValue": messageToApp.payload.eventValue,
+                    "scenarioState": JSON.parse(JSON.stringify($simulationScenarioStore))  // [HACK] Just want to get a snapshot of state
+                }
+            });
+
             // [FIXME] Remove this alert once a more elegant solution is implemented
             alert("You have completed this scenario. Please move onto the next one, if it exists.");
+        }
 
-            // [TODO] Submit data to server
+        // In the general case, use the standard-format event handler
+        else {
+            handleMessage(messageToApp);
         }
 	});
 
@@ -296,7 +313,7 @@
 <button on:click={startSimulation} id="startButton">Start the Simulation</button>
 
 <!-- Instrumentation Component: Contains no visible elements -->
-<Instrumentation globalEventCache={globalEventCache} bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:props={props.instrumentationData} />
+<Instrumentation globalEventCache={$globalEventCache} bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:props={props.instrumentationData} />
 
 <!-- Primary Dashboard UI Section -->
 <main>

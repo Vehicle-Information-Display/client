@@ -13,6 +13,10 @@ export const globalEventCache = {
 
 // Base Simulation Inter-Component Data Store
 export let simulationDataStore = writable({
+    "serverInfo": {
+        "uid": undefined,
+        "serverURL": "http://localhost:8080"
+    },
     "speed": "10",                 // Measured in miles per hour
     "engineRPM": "1000",           // Measured in revolutions per second
     "fuelLevelPercent": "100",     // Measured in percentage of a full tank
