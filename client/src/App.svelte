@@ -9,6 +9,7 @@
     import Instrumentation from './Instrumentation.svelte';
 	import Instruction from "./Instruction.svelte";
 	import MiniGame from './MiniGame.svelte';
+	import Modal from './Modal.svelte';
 
 	// --[ Layout/Scenario Imports ]--
     import SimpleDash from './SimpleDash.svelte';
@@ -23,6 +24,85 @@
 
     // Will store the variable referencing the global tick interval caller
     let globalTickInterval;
+
+    // --[ User Registration Handling ]--
+
+    // By default, we want the user registration modal to show up above everything else
+    let showUserRegModal = true;
+
+    // By default, the spinner should be hidden
+    let showSpinner = false;
+
+    // Placeholder user info
+    let userName = undefined;
+    let userEmail = undefined;
+
+    // Error messages
+    let regError;
+
+    // Function to actually run the registration
+    function userRegister() {
+        // Check for errors
+        if (userName === undefined || userName === null || userName == "") {
+            regError = "Name is not valid!";
+            return;
+        } else if (userEmail === undefined || userName === null || userEmail == "") {
+            regError = "Email is not valid!";
+            return;
+        }
+
+        // Show the spinner before the async call
+        showSpinner = true;
+
+        // Build the request body
+        const body = {
+            "type": "insertUser",
+            "name": userName,
+            "email": userEmail
+        }
+
+        // Make async call
+        // Send the request
+        fetch($simulationDataStore.serverInfo.serverURL, {
+            method: "POST",
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify(body)
+        }).then(res => res.json()).then(res => {
+            // Get uid from the returned JSON object
+            const uid = res.user_id;
+
+            // [FIXME] Remove this response logging in production
+            console.log("[DEBUG] Sent new user request to server, got uid: " + uid);
+
+            // Update the UID in the simulation data store
+            simulationDataStore.update(ex => {
+                ex.serverInfo.uid = uid;
+                return ex;
+            });
+
+            // Emit event notifying the completion of the registration flow
+            handleMessage({
+                "timestamp": Date.now(),
+                "name": "userRegistrationComplete",
+                "category": "userevent",
+                "intendedTarget": "records",
+                "tags": ["registration", "server"],
+                "payload": {
+                    "userId": uid
+                }
+            });
+
+            // Hide the modal and spinner when done
+            showSpinner = false;
+            showUserRegModal = false;
+        });
+    }
 
 	// --[ App Props ]--
 	let props = {
@@ -308,6 +388,32 @@
         }
     }
 </style>
+
+<!-- User Registration Modal -->
+{#if showUserRegModal}
+    <Modal on:close="{() => showUserRegModal = false}">
+        <h2 slot="header">Register</h2>
+
+        <div>
+            <input bind:value={userName} placeholder="Enter your name">
+            <input bind:value={userEmail} placeholder="Enter your email">
+        </div>
+
+        <p>Thank you, {userName || 'stranger'}! Click the register button below when ready.</p>
+
+        {#if regError}
+            <p style="color: red; border: 1px solid red; padding: 1px;">{regError}</p>
+        {/if}
+
+        {#if showSpinner}
+            <div>
+                <img src="img/spinner.gif" height="100px" width="auto" alt="waiting...">
+            </div>
+        {/if}
+
+        <button autofocus on:click={userRegister}>Register</button>
+    </Modal>
+{/if}
 
 <!-- [TODO] Change the styles of the start button to be less amateurish -->
 <button on:click={startSimulation} id="startButton">Start the Simulation</button>
