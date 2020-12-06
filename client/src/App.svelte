@@ -142,6 +142,12 @@
             console.error("[ERROR] Error appending message to message cache:" + error.message);
         }
 
+        // If the message is an instruction
+        if (message.name == "emitInstruction") {
+            props.instructionData.display = true;
+            props.instructionData.currentInstruction = message.payload.instruction;
+        }
+
         // Propagate events to all registered children
         messageRecipients.forEach((recipient) => {
             try {

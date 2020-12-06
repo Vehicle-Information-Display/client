@@ -3,6 +3,7 @@ let testScenario = {
     layout: "SimpleDash",
     instructions: new Map([
         [0, [{"instruction": "setSpeed", "value": "55"}, {"instruction": "setRPM", "value": "1200"}]],
+        [4, [{"instruction": "emitInstruction", "value": "Testing"}]],
         [5, [{"instruction": "setSpeed", "value": "65"}, {"instruction": "setRPM", "value": "3800"}]],
         [6, [{"instruction": "setAlert", "value": "Testing alert system"}]],
         [10, [{"instruction": "setSpeed", "value": "75"}, {"instruction": "setRPM", "value": "4500"}]],
