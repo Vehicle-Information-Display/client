@@ -180,8 +180,24 @@
 		globalTickCount++;
 	}
 
-	// Call tick every 500 milliseconds
-	setInterval(globalTick, props.tickTime);
+    // Global Simulation Start
+    function startSimulation() {
+	    // Emit an event signalling the start of the simulation
+        handleMessage({
+            "timestamp": Date.now(),
+            "name": "simulationStart",
+            "category": "majorevent",
+            "intendedTarget": null,
+            "tags": ["App"],
+            "payload": {}
+        });
+
+        // Start ticking in the simulation
+        setInterval(globalTick, props.tickTime);
+
+        // Hide the start button after starting simulation
+        document.getElementById('startButton').style.display = "none";
+    }
 
     let rotWhlRight = () => {
         console.log("Turning Wheel Right...");
@@ -295,7 +311,13 @@
     }
 </style>
 
+<!-- [TODO] Change the styles of the start button to be less amateurish -->
+<button on:click={startSimulation} id="startButton">Start the Simulation</button>
+
+<!-- Instrumentation Component: Contains no visible elements -->
 <Instrumentation globalEventCache={globalEventCache} bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:props={props.instrumentationData} />
+
+<!-- Primary Dashboard UI Section -->
 <main>
     <div class="dashArea-container">
         <SimpleDash bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={$simulationDataStore} />
