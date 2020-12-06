@@ -244,6 +244,13 @@
             props.dashboardValues.hazardLights = false
         }
     }
+
+    // --[ Layouts Setup ]--
+    const layouts = [
+        { name: "SimpleDash", component: SimpleDash }
+    ]
+
+    let selectedLayout = layouts[0];
 </script>
 
 <style>
@@ -320,7 +327,7 @@
 <!-- Primary Dashboard UI Section -->
 <main>
     <div class="dashArea-container">
-        <SimpleDash bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={$simulationDataStore} />
+        <svelte:component this={selectedLayout.component} bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={$simulationDataStore} />
     </div>
     <div class="game-container">
         <MiniGame bind:this={messageRecipients[2]} on:message={handleDispatchedEvent} bind:props={props.minigameData} />
