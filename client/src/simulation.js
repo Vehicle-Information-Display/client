@@ -22,8 +22,9 @@ let simulationRegisterMessageToApp = function (callback) {
 let simulationTick = function(globalTickTime) {
 
     // Check if an instruction is scheduled to run at the current time
-    if (simulationScenario.has(globalTickTime)) {
-        const instructionWrapper = simulationScenario.get(globalTickTime);
+    const instructions = simulationScenario.instructions
+    if (instructions.has(globalTickTime)) {
+        const instructionWrapper = instructions.get(globalTickTime);
         for (const i in instructionWrapper) {
             handleInstruction(instructionWrapper[i].instruction, instructionWrapper[i].value);
         }
