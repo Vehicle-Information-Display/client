@@ -114,8 +114,8 @@
         "minigameData": {
 		    "tempRefreshTimer": 500,
 		    "canvasDimensions": {
-		        "width": 800,
-                "height": 400
+		        "width": 600,
+                "height": 280
             }
         },
         "instructionData": {
