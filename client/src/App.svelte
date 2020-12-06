@@ -141,11 +141,6 @@
 
 	// --[ Global Simulation Setup ]--
 
-	// Define the scenario to use within the simulation
-	simulationScenarioStore.update((sc) => {
-		return testScenario;
-	});
-
 	// Register a callback function to handle messages thrown by the simulation
 	simulationRegisterMessageToApp((messageToApp) => {
 		console.debug("[DEBUG] Received a message from the simulation!");
@@ -199,12 +194,21 @@
         document.getElementById('startButton').style.display = "none";
     }
 
-    // --[ Layouts Setup ]--
-    const layouts = [
-        { name: "SimpleDash", component: SimpleDash }
-    ]
+    // --[ Scenario & Layouts Setup ]--
 
-    let selectedLayout = layouts[0];
+    // Define the scenario to use within the simulation
+    // [TODO] The scenario should be hot-swappable!
+    simulationScenarioStore.update((sc) => {
+        return testScenario;
+    });
+
+	// Create a map of Layouts and their respective components
+	const layouts = new Map([
+        ["SimpleDash", SimpleDash]
+    ]);
+
+	// Specify which component should be used by grabbing the layout name from the scenario-specific store
+    let selectedLayout = layouts.get($simulationScenarioStore.layout);
 </script>
 
 <style>
@@ -281,7 +285,7 @@
 <!-- Primary Dashboard UI Section -->
 <main>
     <div class="dashArea-container">
-        <svelte:component this={selectedLayout.component} bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={$simulationDataStore} />
+        <svelte:component this={selectedLayout} bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={$simulationDataStore} />
     </div>
     <div class="game-container">
         <MiniGame bind:this={messageRecipients[2]} on:message={handleDispatchedEvent} bind:props={props.minigameData} />

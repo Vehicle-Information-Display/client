@@ -1,6 +1,9 @@
 <script>
     //when mounted then do stuff function
-    import { onMount, createEventDispatcher } from "svelte";
+    import { onMount, onDestroy, createEventDispatcher } from "svelte";
+
+    // Import Current Scenario Information Store
+    import { simulationScenarioStore } from "./stores";
 
     // Create event dispatcher
     const dispatch = createEventDispatcher();
@@ -9,6 +12,13 @@
      * Note: For external message passing only
      */
     export let props = {}
+
+    // Get simulation-specific data from the global current-scenario store
+    let blockData;
+    const unsubScenarioData = simulationScenarioStore.subscribe(value => {
+        blockData = value.minigameBlocks;
+    });
+    onDestroy(unsubScenarioData);   // Avoid a memory leak
 
     // Allow parent components to call this component's event handler
     export function handleMessage(message) {
@@ -107,59 +117,7 @@
     //columns are widthSpaces, 0 are no object creation, 1 are object creation.
     //Rows spawn everytime space is available
     //First IN Last OUT
-    let objMiniGameSimulation = [
-        [0,0,0,1,0,0,1,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,1,0,0,1,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,0,0,0,0,0,1,0,0,1,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,1,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,1,0,0,1,0,0,1,1,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,0,1,1,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,0,0,1,0,1,0,1,0,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,1,0,0,1,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,0,0,0,0,0,1,0,0,1,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,1,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,1,0,0,1,0,0,1,1,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,0,1,1,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,0,0,1,0,1,0,1,0,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,1,0,0,1,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,0,0,0,0,0,1,0,0,1,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,1,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,1,0,0,1,0,0,1,1,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,0,1,1,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,0,0,1,0,1,0,1,0,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,1,0,0,1,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,0,0,0,0,0,1,0,0,1,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,1,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,1,0,0,1,0,0,1,1,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,0,1,1,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,0,0,1,0,1,0,1,0,0,1]
-    ];
+    let objMiniGameSimulation = blockData;
     let activeRow = 0;
 
     let intervalID;
