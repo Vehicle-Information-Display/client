@@ -100,7 +100,7 @@ let handleInstruction = function (instruction, value) {
             case "emitInstruction":
                 try {
                     console.debug("[DEBUG] Received emitInstruction instruction for: " + value);
-                    simulationSendMessage({
+                    messageToApp({
                         "timestamp": Date.now(),
                         "name": "emitInstruction",
                         "category": "simulationevent",
@@ -261,6 +261,24 @@ let handleInstruction = function (instruction, value) {
                     }
                 } catch (error) {
                     console.error("[ERROR] Encountered an error while executing setMediaStatus instruction: " + error);
+                }
+                break;
+
+            case "emitMajorEvent":
+                try {
+                    console.debug("[DEBUG] Received emitMajorEvent instruction for: " + value);
+                    messageToApp({
+                        "timestamp": Date.now(),
+                        "name": "majorEvent",
+                        "category": "simulationevent",
+                        "intendedTarget": "app",
+                        "tags": ["instruction", "major"],
+                        "payload": {
+                            "eventValue": value
+                        }
+                    });
+                } catch (error) {
+                    console.error("[ERROR] Encountered an error while executing emitMajorEvent instruction: " + error);
                 }
                 break;
 

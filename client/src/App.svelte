@@ -21,6 +21,9 @@
     // [HACK] This is a workaround for passing messages to children
     let messageRecipients = [];
 
+    // Will store the variable referencing the global tick interval caller
+    let globalTickInterval;
+
 	// --[ App Props ]--
 	let props = {
 		"name": "Simple Dashboard",
@@ -144,7 +147,20 @@
 	// Register a callback function to handle messages thrown by the simulation
 	simulationRegisterMessageToApp((messageToApp) => {
 		console.debug("[DEBUG] Received a message from the simulation!");
-		console.debug(messageToApp);
+		// console.debug(messageToApp);
+
+		// Check if the simulation has finished
+        if (messageToApp.name == "majorEvent" && messageToApp.payload.eventValue == "end") {
+            console.debug("[DEBUG] RECEIVED END OF THE SIMULATION!");
+
+            // Stop simulation tick
+            clearInterval(globalTickInterval);
+
+            // [FIXME] Remove this alert once a more elegant solution is implemented
+            alert("You have completed this scenario. Please move onto the next one, if it exists.");
+
+            // [TODO] Submit data to server
+        }
 	});
 
 	// Global Tick Count (Used for "global time")
@@ -188,7 +204,7 @@
         });
 
         // Start ticking in the simulation
-        setInterval(globalTick, props.tickTime);
+        globalTickInterval = setInterval(globalTick, props.tickTime);
 
         // Hide the start button after starting simulation
         document.getElementById('startButton').style.display = "none";

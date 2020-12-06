@@ -11,6 +11,7 @@ let testScenario = {
         [13, [{"instruction": "setSpeed", "value": "78"}, {"instruction": "setRPM", "value": "3200"}]],
         [14, [{"instruction": "setSpeed", "value": "79"}, {"instruction": "setRPM", "value": "3300"}]],
         [15, [{"instruction": "setSpeed", "value": "80"}, {"instruction": "setRPM", "value": "3500"}]],
+        [51, [{"instruction": "emitMajorEvent", "value": "end"}]]
     ]),
     minigameBlocks: [
         [0,0,0,1,0,0,1,0,0,0,0,0],
