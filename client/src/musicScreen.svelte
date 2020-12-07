@@ -33,8 +33,8 @@ var player, currentVideoId = 0;
 
 window.addEventListener("iframeApiReady", function(e) {
   player = new YT.Player('player', {
-    height: '0',
-    width: '0',
+    height: '240',
+    width: '426',
     playerVars: {
       controls: 1,
       showinfo: 0,
@@ -53,7 +53,7 @@ window.addEventListener("iframeApiReady", function(e) {
 function onPlayerReady(event) {
   event.target.loadVideoById(videoIDs[currentVideoId]);
     
-  player.setVolume(25);
+  player.setVolume(40);
     // bind events
     var playButton = document.getElementById("play-button");
     playButton.addEventListener("click", function() {
@@ -65,16 +65,12 @@ function onPlayerReady(event) {
         player.pauseVideo();
     });
 
-    var stopButton = document.getElementById("stop-button");
-    stopButton.addEventListener("click", function() {
-        player.stopVideo();
-    });
- var next = document.getElementById("next");
+    var next = document.getElementById("next");
     next.addEventListener("click", function() {
         player.nextVideo();
     });
     
- var pre = document.getElementById("previous");
+    var pre = document.getElementById("previous");
     pre.addEventListener("click", function() {
         player.previousVideo();
     });
@@ -167,19 +163,20 @@ iframe {
 	margin: 0 auto;
 	width: 0px;
 	height: 0px;
-	float: left;
-	clear: both;
+	
+	
 	display: block;
 	background-color: #eee;
 }
 </style>
 
-
-    <div id="player"></div>
-        <div class="buttons">
+    <div style="width:100%;height:100%;display: flex;align-items: center;justify-content: center;">
+    <div style="vertical-align:middle;" id="player"></div>
+    </div>
+        <!-- <div class="buttons">
 		    <button class="button" id="play-button">PLAY</button>
 		    <button class="button" id="pause-button">PAUSE</button>
 		    <button class="button" id="previous">previous</button>
 		    <button class="button" id="next">Next</button>
 		    <button class="button" id="stop-button">STOP</button>
-	    </div>
+	    </div> -->
