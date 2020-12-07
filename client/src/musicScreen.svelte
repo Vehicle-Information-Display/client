@@ -33,8 +33,8 @@ var player, currentVideoId = 0;
 
 window.addEventListener("iframeApiReady", function(e) {
   player = new YT.Player('player', {
-    height: '240',
-    width: '426',
+    height: '0',
+    width: '0',
     playerVars: {
       controls: 1,
       showinfo: 0,
@@ -95,6 +95,9 @@ function onPlayerStateChange(event) {
   if (event.data == YT.PlayerState.ENDED) {
     currentVideoId++;
     if (currentVideoId < videoIDs.length) {
+      player.loadVideoById(videoIDs[currentVideoId]);
+    } else{
+      currentVideoId = 0;
       player.loadVideoById(videoIDs[currentVideoId]);
     }
   }
