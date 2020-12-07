@@ -141,11 +141,8 @@ function onPlayerReady(event) {
 function onPlayerStateChange(event) {
   if (event.data == YT.PlayerState.ENDED) {
     currentVideoId++;
-    if (currentVideoId < videoIDs.length) {
-      player.loadVideoById(videoIDs[currentVideoId]);
-    } else{
-      currentVideoId = 0;
-      player.loadVideoById(videoIDs[currentVideoId]);
+    if (currentVideoId > videoIDs.length) {
+        player.loadVideoById(videoIDs[currentVideoId]);
     }
   }
 }
