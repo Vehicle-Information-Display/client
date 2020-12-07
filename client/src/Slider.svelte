@@ -51,6 +51,7 @@
           const distance = e.clientX - slider.getBoundingClientRect().left
           const value = Math.round((distance / scale)) * step;
           current = value;
+          player.setVolume(current*100);
       }
       
       function handleKeydown(e) {
