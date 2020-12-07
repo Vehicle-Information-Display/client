@@ -25,6 +25,8 @@
     // Will store the variable referencing the global tick interval caller
     let globalTickInterval;
 
+    let simulationRunning = false;
+
     // --[ User Registration Handling ]--
 
     // By default, we want the user registration modal to show up above everything else
@@ -256,6 +258,9 @@
                 }
             });
 
+            // Set the simulationRunning flag
+            simulationRunning = false;
+
             // [FIXME] Remove this alert once a more elegant solution is implemented
             alert("You have completed this scenario. Please move onto the next one, if it exists.");
         }
@@ -311,6 +316,9 @@
 
         // Hide the start button after starting simulation
         document.getElementById('startButton').style.display = "none";
+
+        // Set the simulationRunning flag
+        simulationRunning = true;
     }
 
     // --[ Scenario & Layouts Setup ]--
