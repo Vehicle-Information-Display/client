@@ -1,7 +1,21 @@
+<script context="module">
+    let iframeApiReady = false;
+    
+    import { setContext, onMount } from "svelte";
+    export function onPlayerReady(){};
+    var tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName("script")[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  
+    window.onYouTubeIframeAPIReady = () =>
+      window.dispatchEvent(new Event("iframeApiReady"));
+  </script>
+
 <script>
-    import { onMount, tick } from 'svelte';
+    import { tick } from 'svelte';
       import { createEventDispatcher } from 'svelte';
-      import MusicScreen, {onPlayerReady} from './musicScreen.svelte';
+      import MusicScreen from './musicScreen.svelte';
       const dispatch = createEventDispatcher();
       export let min = 0;
       export let max = 100;
@@ -27,8 +41,7 @@
               const distance = e.clientX - slider.getBoundingClientRect().left
           const value = Math.round((distance / scale)) * step;
           current = Math.max(Math.min(value, max), min);
-          onPlayerReady("mousedown", current);
-          console.log(current);
+          player.setVolume(current*100);
           }
       }
    
@@ -55,6 +68,87 @@
       function handleMouseup(e) {
           sliding = false;
       }
+
+      var videoIDs = [
+  'tG35R8F2j8k',
+  'Xssze9dU47I',
+  'bBTeAg5CFRA',
+  '5xppdO2b2rc',
+  'UWktRW128UA'
+  
+];
+
+var player, currentVideoId = 0;
+
+window.addEventListener("iframeApiReady", function(e) {
+  player = new YT.Player('player', {
+    height: '0',
+    width: '0',
+    playerVars: {
+      controls: 1,
+      showinfo: 0,
+      rel: 0,
+      showsearch: 0,
+      iv_load_policy: 3,
+      autoplay: 1
+    },
+    events: {
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
+    }
+      });
+});
+
+function onPlayerReady(event) {
+  event.target.loadVideoById(videoIDs[currentVideoId]);
+    // bind events
+    var playButton = document.getElementById("play-button");
+    playButton.addEventListener("click", function() {
+        player.playVideo();
+    });
+
+    var pauseButton = document.getElementById("pause-button");
+    pauseButton.addEventListener("click", function() {
+        player.pauseVideo();
+    });
+
+    var next = document.getElementById("next");
+    next.addEventListener("click", function() {
+        player.nextVideo();
+    });
+    
+    var pre = document.getElementById("previous");
+    pre.addEventListener("click", function() {
+        player.previousVideo();
+    });
+
+// var vol = document.getElementById("slider");
+//     if("mouseup"){ // check if mouse down.
+//         vol.addEventListener("mousemove", function(current) {
+//         console.log("Hello");
+//         player.setVolume(current);
+//     });
+// }   
+    
+    
+     player.loadPlaylist( {
+        playlist:videoIDs
+    } );
+
+
+}
+
+function onPlayerStateChange(event) {
+  if (event.data == YT.PlayerState.ENDED) {
+    currentVideoId++;
+    if (currentVideoId < videoIDs.length) {
+      player.loadVideoById(videoIDs[currentVideoId]);
+    } else{
+      currentVideoId = 0;
+      player.loadVideoById(videoIDs[currentVideoId]);
+    }
+  }
+}
       
   </script>
   
