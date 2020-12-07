@@ -16,7 +16,9 @@
     // Get simulation-specific data from the global current-scenario store
     let blockData;
     const unsubScenarioData = simulationScenarioStore.subscribe(value => {
-        blockData = value.minigameBlocks;
+        if (value !== undefined && value !== null) {
+            blockData = value.minigameBlocks;
+        }
     });
     onDestroy(unsubScenarioData);   // Avoid a memory leak
 

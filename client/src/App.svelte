@@ -314,28 +314,50 @@
         // Start ticking in the simulation
         globalTickInterval = setInterval(globalTick, props.tickTime);
 
-        // Hide the start button after starting simulation
-        document.getElementById('startButton').style.display = "none";
-
         // Set the simulationRunning flag
         simulationRunning = true;
     }
 
     // --[ Scenario & Layouts Setup ]--
 
-    // Define the scenario to use within the simulation
-    // [TODO] The scenario should be hot-swappable!
+    // Create a list of scenarios, their layouts, and their respective components
+    const scenarios = [
+        {"name": "SimpleDash", "scenario": testScenario, "layoutName": "SimpleDash", "component": SimpleDash}
+    ];
+
+    // Define the default scenario to use within the simulation
     simulationScenarioStore.update((sc) => {
         return testScenario;
     });
 
-	// Create a map of Layouts and their respective components
-	const layouts = new Map([
-        ["SimpleDash", SimpleDash]
-    ]);
+	// Function to switch scenarios/layouts
+    function switchScene(sceneName) {
+        console.debug("[DEBUG] Switching scenarios button pressed");
+
+        // Find the scenario with the given name
+        const scene = scenarios.find(item => item.name == sceneName);
+        if (scene === undefined) {
+            console.error("[ERROR] Selected scene not found! This is probably an implementation error!");
+            return;
+        }
+
+        // Return if unable to switch right now
+        if (simulationRunning) {
+            console.debug("[DEBUG] Cannot currently switch scenarios because a simulation is running!");
+            return;
+        }
+
+        // [TODO] Emit scenario change event
+
+        // Change scenarios in the data store
+        simulationScenarioStore.update((previous) => {
+            return scene.scenario;
+        });
+    }
 
 	// Specify which component should be used by grabbing the layout name from the scenario-specific store
-    let selectedLayout = layouts.get($simulationScenarioStore.layout);
+    let selectedLayout;
+    $: selectedLayout = scenarios.find(scenario => scenario.layoutName == $simulationScenarioStore.layout);
 </script>
 
 <style>
@@ -429,8 +451,21 @@
     </Modal>
 {/if}
 
-<!-- [TODO] Change the styles of the start button to be less amateurish -->
-<button on:click={startSimulation} id="startButton">Start the Simulation</button>
+<!-- Simulation Controls Container -->
+<div class="sim-controls">
+
+    <div class="layout-switcher">
+        {#each scenarios as scene}
+            <!-- [HACK] Just need to use a nested function here to put arguments in the call -->
+            <button on:click={() => {switchScene(scene.name)}}>{scene.name}</button>
+        {/each}
+    </div>
+
+    {#if !simulationRunning}
+        <!-- [TODO] Change the styles of the start button to be less amateurish -->
+        <button on:click={startSimulation} id="startButton">Start the Simulation</button>
+    {/if}
+</div>
 
 <!-- Instrumentation Component: Contains no visible elements -->
 <Instrumentation globalEventCache={$globalEventCache} bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:props={props.instrumentationData} />
@@ -438,7 +473,7 @@
 <!-- Primary Dashboard UI Section -->
 <main>
     <div class="dashArea-container">
-        <svelte:component this={selectedLayout} bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={$simulationDataStore} />
+        <svelte:component this={selectedLayout.component} bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={$simulationDataStore} />
     </div>
     <div class="game-container">
         <MiniGame bind:this={messageRecipients[2]} on:message={handleDispatchedEvent} bind:props={props.minigameData} />
