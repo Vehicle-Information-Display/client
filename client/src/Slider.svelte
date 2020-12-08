@@ -15,7 +15,6 @@
 <script>
     import { tick } from 'svelte';
       import { createEventDispatcher } from 'svelte';
-      import MusicScreen from './musicScreen.svelte';
       const dispatch = createEventDispatcher();
       export let min = 0;
       export let max = 100;
@@ -59,10 +58,12 @@
               e.preventDefault();
               const nextValue = current - step;
               current = Math.max(nextValue, min);
+              player.setVolume(current*100);
           } else if (e.keyCode === 38 || e.keyCode === 39) {
               e.preventDefault();
               const nextValue = current + step;
               current = Math.min(nextValue, max);
+              player.setVolume(current*100);
           }
       }
   
@@ -70,7 +71,7 @@
           sliding = false;
       }
 
-      var videoIDs = [
+export let videoIDs = [
         'S-Xm7s9eGxU',
         'tG35R8F2j8k',
         'QtHRyy5LODE',
@@ -82,7 +83,11 @@
   
 ];
 
-var player, currentVideoId = 0;
+var player;
+
+let playerProps= {
+        currentVideoId: 0
+    }
 
 window.addEventListener("iframeApiReady", function(e) {
   player = new YT.Player('player', {
@@ -104,7 +109,7 @@ window.addEventListener("iframeApiReady", function(e) {
 });
 
 function onPlayerReady(event) {
-  event.target.loadVideoById(videoIDs[currentVideoId]);
+  event.target.loadVideoById(videoIDs[playerProps.currentVideoId]);
     // bind events
     var playButton = document.getElementById("play-button");
     playButton.addEventListener("click", function() {
@@ -144,9 +149,9 @@ function onPlayerReady(event) {
 
 function onPlayerStateChange(event) {
   if (event.data == YT.PlayerState.ENDED) {
-    currentVideoId++;
-    if (currentVideoId > videoIDs.length) {
-        player.loadVideoById(videoIDs[currentVideoId]);
+    playerProps.currentVideoId++;
+    if (playerProps.currentVideoId > videoIDs.length) {
+        player.loadVideoById(videoIDs[playerProps.currentVideoId]);
     }
   }
 }
