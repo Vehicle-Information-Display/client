@@ -453,13 +453,15 @@
 
 <!-- Simulation Controls Container -->
 <div class="sim-controls">
-
+    <h3>Scene Selector</h3>
     <div class="layout-switcher">
         {#each scenarios as scene}
             <!-- [HACK] Just need to use a nested function here to put arguments in the call -->
-            <button on:click={() => {switchScene(scene.name)}}>{scene.name}</button>
+            <button on:click={() => {switchScene(scene.name)}}>Scene: {scene.name}</button>
         {/each}
     </div>
+
+    <hr>
 
     {#if !simulationRunning}
         <!-- [TODO] Change the styles of the start button to be less amateurish -->
