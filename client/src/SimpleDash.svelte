@@ -148,8 +148,8 @@
         grid-template-areas:
             "textAlert textAlert textAlert textAlert"
             "rpm symbols mph dNav"
-            "rpm symbols sitAware dNav"
-            "rpm symbols sitAware dNav";
+            "rpm symbols mph dNav"
+            "rpm symbols mph dNav";
         margin: auto;
         width: 95%;
         height: auto;
