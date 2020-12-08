@@ -13,6 +13,7 @@
     import SeatWC from "./SeatWarmer.svelte";
     import Outer from "./Outer.svelte";
     import FuelTape from './FuelTape.svelte';
+    import { testScenario } from './scenarios/testScenario';
 
     export let values = {
         speed: 0,
@@ -357,7 +358,21 @@
                 <FuelTape />
             </div>
             <div class="mph-container">
-                <svg
+                <div style="font-weight:900; font-size:72" id="x"> </div>
+                <script>
+                    var x = document.getElementById('x');
+                    var s = [10, 20, 50, 70, 75, 75, 80, 75, 60, 55, 40, 30, 25, 30, 20, 10, 20, 50, 70, 75, 75, 80, 75, 60, 55, 40, 30, 25, 30, 20];
+                    var i = 0;
+
+                    (function loop() {
+                        console.log(i);
+                        x.innerHTML = s[i];
+                        if (++i < s.length) {
+                            setTimeout(loop, 1000);
+                        }
+                    })();
+                </script>
+                <!-- <svg
                     width="100%"
                     height="100%"
                     viewBox="0 0 8000 4500"
@@ -406,7 +421,7 @@
                             </g>
                         </g>
                     </g>
-                </svg>
+                </svg> -->
             </div>
             <div class="dNav-container">
                 <img src="img/horNav.PNG" width="100%" height="100%" alt="">
