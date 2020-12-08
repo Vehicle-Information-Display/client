@@ -120,14 +120,6 @@
     }
 
     /* wheel screen element */
-    .sitAware-container {
-        grid-area: sitAware;
-        border: solid black;
-        border-radius: 10px;
-        background-color: white;
-    }
-
-    /* wheel screen element */
     .dNav-container {
         grid-area: dNav;
         border: solid black;
@@ -415,9 +407,6 @@
                         </g>
                     </g>
                 </svg>
-            </div>
-            <div class="sitAware-container">
-                <fontSize>SA</fontSize>
             </div>
             <div class="dNav-container">
                 <img src="img/horNav.PNG" width="100%" height="100%" alt="">
