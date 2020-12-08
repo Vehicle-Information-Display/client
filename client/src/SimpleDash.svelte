@@ -8,6 +8,7 @@
     import CogWheel from "./Cogwheel.svelte";
     import Temperature from "./TempModule.svelte";
     import MusicControls from "./MusicControls.svelte";
+    import MusicScreen from "./musicScreen.svelte";
     import SteeringWheel from "./SteeringWheel.svelte";
     import SeatWC from "./SeatWarmer.svelte";
     import Outer from "./Outer.svelte";
@@ -123,14 +124,6 @@
     }
 
     /* wheel screen element */
-    .sitAware-container {
-        grid-area: sitAware;
-        border: solid black;
-        border-radius: 10px;
-        background-color: white;
-    }
-
-    /* wheel screen element */
     .dNav-container {
         grid-area: dNav;
         border: solid black;
@@ -151,8 +144,8 @@
         grid-template-areas:
             "textAlert textAlert textAlert textAlert"
             "rpm symbols mph dNav"
-            "rpm symbols sitAware dNav"
-            "rpm symbols sitAware dNav";
+            "rpm symbols mph dNav"
+            "rpm symbols mph dNav";
         margin: auto;
         width: 95%;
         height: auto;
@@ -242,7 +235,7 @@
         border-radius: 25px; */
         grid-area: optionsInfo;
         grid-auto-flow: column;
-        grid-template-columns: 20% 10% 55% 8% 7%;
+        grid-template-columns: 20% 10% 50% 9% 6%;
         grid-template-rows: 100%;
         grid-template-areas: "mySettings hazards myTime myWeather myTemperature";
     }
@@ -368,7 +361,21 @@
                 <FuelTape />
             </div>
             <div class="mph-container">
-                <svg
+                <div style="font-weight:900; font-size:72px; margin-top:15%" id="x"> </div>
+                <script>
+                    var x = document.getElementById('x');
+                    var s = [0, 55, 65, 75, 76, 77, 78, 79, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80];
+                    var i = 0;
+
+                    (function loop() {
+                        console.log(i);
+                        x.innerHTML = s[i];
+                        if (++i < s.length) {
+                            setTimeout(loop, 750);
+                        }
+                    })();
+                </script>
+                <!-- <svg
                     width="100%"
                     height="100%"
                     viewBox="0 0 8000 4500"
@@ -417,13 +424,9 @@
                             </g>
                         </g>
                     </g>
-                </svg>
-            </div>
-            <div class="sitAware-container">
-                <fontSize>SA</fontSize>
+                </svg> -->
             </div>
             <div class="dNav-container">
-                <!-- <fontSize>NAV</fontSize> -->
                 <img src="img/horNav.PNG" width="100%" height="100%" alt="">
             </div>
         </div>
@@ -454,15 +457,15 @@
             </div>
         </div>
         <div class="nav-container">
-            <!-- <fontSize>Nav</fontSize><br /> -->
             <img src="img/vertNav.PNG" width="100%" height="100%" alt="">
-            <!-- <Outer on:message={handleComponentEvent} /> -->
         </div>
         <div class="music-container">
             <div class="musicButtons-container">
                 <MusicControls bind:mC={musicControls} />
             </div>
-            <div class="musicType-container">SONG DETAILS......
+            <div class="musicType-container">
+                <!-- SONG DETAILS...... -->
+                <MusicScreen/>
             </div>
             
         </div>
