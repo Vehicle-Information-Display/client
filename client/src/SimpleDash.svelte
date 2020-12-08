@@ -358,7 +358,7 @@
                 <FuelTape />
             </div>
             <div class="mph-container">
-                <div style="font-weight:900; font-size:72" id="x"> </div>
+                <div style="font-weight:900; font-size:72px; margin-top:10%" id="x"> </div>
                 <script>
                     var x = document.getElementById('x');
                     var s = [10, 20, 50, 70, 75, 75, 80, 75, 60, 55, 40, 30, 25, 30, 20, 10, 20, 50, 70, 75, 75, 80, 75, 60, 55, 40, 30, 25, 30, 20];
