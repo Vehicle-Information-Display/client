@@ -368,7 +368,7 @@
             <div class="symbols-container">
                 <img src="fueltape.png" alt="" height="150px">
             </div>
-            <div class="mph-container">
+            <div class="mph-container" style="height: 300px;">
                 <SimpleSpeedometer bind:speed={values.speed} />
             </div>
             <div class="sitAware-container">
