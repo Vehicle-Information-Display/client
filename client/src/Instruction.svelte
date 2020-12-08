@@ -93,9 +93,9 @@
 <style>
     .instruction-wrapper {
         text-align: center;
-        height: 10vw;
+        /*height: 3vw;*/
         width: 100%;
-        font-size: 3vh;
+        /*font-size: 2.8vh;*/
     }
 </style>
 
