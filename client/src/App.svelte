@@ -80,7 +80,7 @@
             const uid = res.user_id;
 
             // [FIXME] Remove this response logging in production
-            console.log("[DEBUG] Sent new user request to server, got uid: " + uid);
+            console.debug("[DEBUG] Sent new user request to server, got uid: " + uid);
 
             // Update the UID in the simulation data store
             simulationDataStore.update(ex => {

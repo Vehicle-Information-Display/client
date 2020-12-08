@@ -38,11 +38,11 @@
             let key = message.payload.keyID;
 
             // Debug log
-            // console.log("[DEBUG] Got keydown event with: " + key);
+            // console.debug("[DEBUG] Got keydown event with: " + key);
 
             // Handle different key events
             if (key === 'd') {
-                console.log("[DEBUG] Moving Right");
+                console.debug("[DEBUG] Moving Right");
                 if (userDim.currX + canvasDims.w / widthSpaces < canvasDims.w - canvasDims.w / widthSpaces) {
                     moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, canvasDims.w / widthSpaces, 0, "car");
                     userDim.currX += canvasDims.w / widthSpaces;
@@ -64,7 +64,7 @@
             }
 
             else if (key === 'a') {
-                console.log("[DEBUG] Moving Left");
+                console.debug("[DEBUG] Moving Left");
                 if (userDim.currX - canvasDims.w / widthSpaces > 0) {
                     moveIMG(userDim.currX, userDim.currY, userDim.w, userDim.h, -canvasDims.w / widthSpaces, 0, "car");
                     userDim.currX += -canvasDims.w / widthSpaces;
