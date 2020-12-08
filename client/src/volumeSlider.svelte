@@ -2,8 +2,6 @@
 	import Slider from './Slider.svelte';
 
 	let volume = 1;
-
-	console
 </script>
 <style>
 	* {
