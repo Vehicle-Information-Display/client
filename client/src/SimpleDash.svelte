@@ -420,7 +420,7 @@
                 <fontSize>SA</fontSize>
             </div>
             <div class="dNav-container">
-                <fontSize>NAV</fontSize>
+                <img src="/img/horNav.PNG" atl=""/>
             </div>
         </div>
         <div class="wheel-container">
@@ -450,8 +450,6 @@
             </div>
         </div>
         <div class="nav-container">
-            <fontSize>Nav</fontSize><br />
-            <Outer on:message={handleMessage} />
         </div>
         <div class="music-container">
             <div class="musicButtons-container">
