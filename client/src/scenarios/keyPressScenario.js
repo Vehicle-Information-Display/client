@@ -1,7 +1,7 @@
 let keyPressScenario = {
     instructions: new Map([
         [0, [{"instruction": "setSpeed", "value": "55"}, {"instruction": "setRPM", "value": "1200"}]],
-        [4, [{"instruction": "emitInstruction", "value": "Press X"}]],
+        [4, [{"instruction": "emitInstruction", "value": "Press pause and/or play the music"}]],
         [5, [{"instruction": "setSpeed", "value": "65"}, {"instruction": "setRPM", "value": "3800"}]],
         [10, [{"instruction": "setSpeed", "value": "75"}, {"instruction": "setRPM", "value": "4500"}]],
         [11, [{"instruction": "emitInstruction", "value": "Press G"}]],

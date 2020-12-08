@@ -13,6 +13,7 @@
     import SeatWC from "./SeatWarmer.svelte";
     import Outer from "./Outer.svelte";
     import FuelTape from './FuelTape.svelte';
+    import SimpleSpeedometer from './SimpleSpeedometer.svelte';
 
     export let values = {
         speed: 0,
@@ -361,70 +362,8 @@
                 <FuelTape />
             </div>
             <div class="mph-container">
-                <div style="font-weight:900; font-size:72px; margin-top:15%" id="x"> </div>
-                <script>
-                    var x = document.getElementById('x');
-                    var s = [0, 55, 65, 75, 76, 77, 78, 79, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80];
-                    var i = 0;
-
-                    (function loop() {
-                        console.log(i);
-                        x.innerHTML = s[i];
-                        if (++i < s.length) {
-                            setTimeout(loop, 750);
-                        }
-                    })();
-                </script>
-                <!-- <svg
-                    width="100%"
-                    height="100%"
-                    viewBox="0 0 8000 4500"
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xml:space="preserve"
-                    xmlns:serif="http://www.serif.com/"
-                    style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-                    <g transform="matrix(4.16667,0,0,4.16667,0,0)">
-                        <g transform="matrix(1,0,0,1,9.51171,69.9184)">
-                            <g transform="matrix(1,0,0,1,35.8199,-45.4795)">
-                                <g
-                                    transform="matrix(690.027,0,0,690.027,328.158,761.181)">
-                                    <path
-                                        d="M0.051,-0.712L0.456,-0.712L0.456,-0.61L0.215,-0L0.101,-0L0.342,-0.61L0.153,-0.61L0.153,-0.507L0.051,-0.507L0.051,-0.712Z"
-                                        style="fill-rule:nonzero;" />
-                                </g>
-                                <g
-                                    transform="matrix(690.027,0,0,690.027,659.357,761.181)">
-                                    <path
-                                        d="M0.34,-0.507C0.338,-0.578 0.305,-0.614 0.24,-0.616C0.175,-0.614 0.141,-0.578 0.14,-0.507L0.14,-0.205C0.141,-0.133 0.175,-0.097 0.24,-0.096C0.305,-0.097 0.338,-0.133 0.34,-0.205L0.34,-0.507ZM0.038,-0.513C0.039,-0.579 0.06,-0.63 0.101,-0.665C0.14,-0.7 0.186,-0.718 0.24,-0.718C0.295,-0.718 0.342,-0.7 0.381,-0.665C0.42,-0.63 0.441,-0.579 0.442,-0.513L0.442,-0.199C0.441,-0.134 0.42,-0.083 0.381,-0.048C0.342,-0.013 0.295,0.005 0.24,0.006C0.186,0.005 0.14,-0.013 0.101,-0.048C0.06,-0.083 0.039,-0.134 0.038,-0.199L0.038,-0.513Z"
-                                        style="fill-rule:nonzero;" />
-                                </g>
-                            </g>
-                            <g
-                                transform="matrix(0.346624,0,0,0.346624,928.186,455.901)">
-                                <g
-                                    transform="matrix(690.027,0,0,690.027,328.158,761.181)">
-                                    <path
-                                        d="M0.075,-0.712L0.177,-0.712L0.381,-0.248L0.581,-0.712L0.683,-0.712L0.683,-0L0.575,-0L0.575,-0.444L0.573,-0.444L0.424,-0.102L0.334,-0.102L0.185,-0.444L0.183,-0.444L0.183,-0L0.075,-0L0.075,-0.712Z"
-                                        style="fill-rule:nonzero;" />
-                                </g>
-                                <g
-                                    transform="matrix(690.027,0,0,690.027,851.069,761.181)">
-                                    <path
-                                        d="M0.183,-0.38L0.343,-0.38C0.383,-0.381 0.413,-0.393 0.433,-0.417C0.452,-0.44 0.462,-0.466 0.462,-0.495C0.462,-0.519 0.458,-0.539 0.45,-0.555C0.442,-0.57 0.431,-0.581 0.416,-0.59C0.394,-0.604 0.368,-0.611 0.339,-0.61L0.183,-0.61L0.183,-0.38ZM0.075,-0.712L0.333,-0.712C0.361,-0.712 0.388,-0.709 0.414,-0.704C0.44,-0.697 0.466,-0.683 0.493,-0.662C0.516,-0.646 0.534,-0.623 0.548,-0.594C0.563,-0.565 0.57,-0.531 0.57,-0.492C0.57,-0.439 0.551,-0.391 0.514,-0.348C0.476,-0.303 0.42,-0.279 0.347,-0.278L0.183,-0.278L0.183,-0L0.075,-0L0.075,-0.712Z"
-                                        style="fill-rule:nonzero;" />
-                                </g>
-                                <g
-                                    transform="matrix(690.027,0,0,690.027,1260.1,761.181)">
-                                    <path
-                                        d="M0.465,-0.311L0.183,-0.311L0.183,-0L0.075,-0L0.075,-0.712L0.183,-0.712L0.183,-0.407L0.465,-0.407L0.465,-0.712L0.573,-0.712L0.573,-0L0.465,-0L0.465,-0.311Z"
-                                        style="fill-rule:nonzero;" />
-                                </g>
-                            </g>
-                        </g>
-                    </g>
-                </svg> -->
+<!--                <div style="font-weight:900; font-size:72px; margin-top:15%" id="x"> </div>-->
+                <SimpleSpeedometer bind:speed={values.speed} />
             </div>
             <div class="dNav-container">
                 <img src="img/horNav.PNG" width="100%" height="100%" alt="">
