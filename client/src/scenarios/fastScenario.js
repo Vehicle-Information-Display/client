@@ -2,8 +2,8 @@
 let fastScenario = {
     instructions: new Map([
         [0, [{"instruction": "setSpeed", "value": "120"}, {"instruction": "setRPM", "value": "7500"}]],
-        [0.5, [{"instruction": "setSpeed", "value": "0"}, {"instruction": "setRPM", "value": "0"}]],
-        [1, [{"instruction": "emitInstruction", "value": "Testing"}]],
+        [1, [{"instruction": "setSpeed", "value": "0"}, {"instruction": "setRPM", "value": "0"}]],
+        [2, [{"instruction": "emitInstruction", "value": "Testing"}]],
         [5, [{"instruction": "setSpeed", "value": "65"}, {"instruction": "setRPM", "value": "1200"}]],
         [6, [{"instruction": "setAlert", "value": "Testing alert system"}]],
         [10, [{"instruction": "setSpeed", "value": "75"}, {"instruction": "setRPM", "value": "4500"}]],

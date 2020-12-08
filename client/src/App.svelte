@@ -120,7 +120,8 @@
 		    "canvasDimensions": {
 		        "width": 600,
                 "height": 280
-            }
+            },
+            "score": 0
         },
         "instructionData": {
 		    "display": true,
@@ -249,16 +250,21 @@
             /* Submit data to server
              * Note: This is done by emitting a message that is handled by the Instrumentation system
              */
-            handleMessage({
+            const toEmit = {
                 "timestamp": messageToApp.timestamp,
                 "name": messageToApp.name,
                 "category": messageToApp.category,
                 "intendedTarget": "instrumentation",
                 "payload": {
                     "eventValue": messageToApp.payload.eventValue,
-                    "scenarioState": JSON.parse(JSON.stringify($simulationScenarioStore))  // [HACK] Just want to get a snapshot of state
+                    "scenarioState": JSON.parse(JSON.stringify($simulationScenarioStore)),  // [HACK] Just want to get a snapshot of state
+                    "finalMiniGameScore": props.minigameData.score
                 }
-            });
+            };
+            handleMessage(toEmit);
+
+            // Reset the MiniGame score
+            props.minigameData.score = 0;
 
             // Set the simulationRunning flag
             simulationRunning = false;

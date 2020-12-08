@@ -11,7 +11,14 @@
     /* Get properties (all) from parent component
      * Note: For external message passing only
      */
-    export let props = {}
+    export let props = {
+        "tempRefreshTimer": undefined,
+        "canvasDimensions": {
+            "width": undefined,
+            "height": undefined
+        },
+        "score": undefined
+    }
 
     // Get simulation-specific data from the global current-scenario store
     let blockData;
@@ -126,7 +133,9 @@
 
     //simulation score and times variables
     let times = []; //record the times of events. first one is simulation start
-    let score = 0; //score of the minigame //each time it is changed add it to the times array
+
+    // NOTE: This has been replaced with a binding!
+    // let score = 0; //score of the minigame //each time it is changed add it to the times array
 
     //record the time event and print it out
     function recordEvent(eventN, time, payload=null) {
@@ -167,8 +176,8 @@
                     if(clash) {
                         objRef.hit = true;
                         objRef.finished = true;
-                        score -= 1;
-                        recordEvent("vehicleClash", Date.now(), {"score": score.valueOf()});
+                        props.score -= 1;
+                        recordEvent("vehicleClash", Date.now(), {"score": props.score.valueOf()});
                     }
                 }
             }
@@ -215,10 +224,10 @@
                 if(clash) {
                     // console.log(this);
                     // console.log(userDim);
-                    score -= 1;
+                    props.score -= 1;
                     this.hit = true;
                     this.finished = true;
-                    recordEvent("vehicleClash", Date.now(), {"score": score.valueOf()});
+                    recordEvent("vehicleClash", Date.now(), {"score": props.score.valueOf()});
                     return;
                 }
             }
@@ -227,8 +236,8 @@
             if(this.y >= canvasDims.h && !this.finished) {
                 // console.log(userDim);
                 // console.log(this);
-                score += 1;
-                recordEvent("vehicleScore", Date.now(), {"score": score.valueOf()});
+                props.score += 1;
+                recordEvent("vehicleScore", Date.now(), {"score": props.score.valueOf()});
                 this.finished = true;
             }
         }
@@ -332,5 +341,5 @@
             width={canvasDims.w}
             height={canvasDims.h}></canvas>
     <!-- on:mousemove={start}  -->
-    <p>Score: {score}</p>
+    <p>Score: {props.score}</p>
 </div>

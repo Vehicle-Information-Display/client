@@ -15,7 +15,8 @@ export const globalEventCache = {
 export let simulationDataStore = writable({
     "serverInfo": {
         "uid": undefined,
-        "serverURL": "http://localhost:8080"
+        // "serverURL": "http://localhost:8080"
+        "serverURL": "http://cse155.herokuapp.com"
     },
     "speed": "10",                 // Measured in miles per hour
     "engineRPM": "1000",           // Measured in revolutions per second
