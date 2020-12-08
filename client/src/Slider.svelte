@@ -14,56 +14,57 @@
 
 <script>
     import { tick } from 'svelte';
-      import { createEventDispatcher } from 'svelte';
-      const dispatch = createEventDispatcher();
-      export let min = 0;
-      export let max = 100;
-      export let step = 2;
-      export let current = 3;
+    import { createEventDispatcher } from 'svelte';
+    import {musicProps} from './musicScreen.svelte';
+    const dispatch = createEventDispatcher();
+    export let min = 0;
+    export let max = 100;
+    export let step = 2;
+    export let current = 3;
 
-      let sliding = false;
-      let slider;
-      let scale;
-      onMount(() => {
-          scale = slider.clientWidth / (max / step);
-          function handleResize() {
-              scale = slider.clientWidth / (max / step);
-          }
+    let sliding = false;
+    let slider;
+    let scale;
+    onMount(() => {
+        scale = slider.clientWidth / (max / step);
+        function handleResize() {
+            scale = slider.clientWidth / (max / step);
+        }
           window.addEventListener('resize', handleResize);
           return () => window.removeEventListener('resize', handleResize);
-      })
+    })
       
-      $: dispatch('change', { value: current });
+    $: dispatch('change', { value: current });
   
-      function handleMouseMove(e) {
-          if (sliding) {
-              const distance = e.clientX - slider.getBoundingClientRect().left
-          const value = Math.round((distance / scale)) * step;
-          current = Math.max(Math.min(value, max), min);
-          player.setVolume(current*100);
-          }
-      }
+    function handleMouseMove(e) {
+        if (sliding) {
+            const distance = e.clientX - slider.getBoundingClientRect().left
+        const value = Math.round((distance / scale)) * step;
+        current = Math.max(Math.min(value, max), min);
+        player.setVolume(current*100);
+         }
+    }
    
-      async function handleMouseDown(e) {
-          sliding = true;
+    async function handleMouseDown(e) {
+        sliding = true;
           
-          const distance = e.clientX - slider.getBoundingClientRect().left
-          const value = Math.round((distance / scale)) * step;
-          current = value;
-          player.setVolume(current*100);
-      }
+        const distance = e.clientX - slider.getBoundingClientRect().left
+        const value = Math.round((distance / scale)) * step;
+        current = value;
+        player.setVolume(current*100);
+    }
       
-      function handleKeydown(e) {
-          if (e.keyCode === 37 || e.keyCode === 40) {
-              e.preventDefault();
-              const nextValue = current - step;
-              current = Math.max(nextValue, min);
-              player.setVolume(current*100);
-          } else if (e.keyCode === 38 || e.keyCode === 39) {
-              e.preventDefault();
-              const nextValue = current + step;
-              current = Math.min(nextValue, max);
-              player.setVolume(current*100);
+    function handleKeydown(e) {
+        if (e.keyCode === 37 || e.keyCode === 40) {
+            e.preventDefault();
+            const nextValue = current - step;
+            current = Math.max(nextValue, min);
+            player.setVolume(current*100);
+        } else if (e.keyCode === 38 || e.keyCode === 39) {
+            e.preventDefault();
+            const nextValue = current + step;
+            current = Math.min(nextValue, max);
+            player.setVolume(current*100);
           }
       }
   
@@ -71,7 +72,7 @@
           sliding = false;
       }
 
-export let videoIDs = [
+    let videoIDs = [
         'S-Xm7s9eGxU',
         'tG35R8F2j8k',
         'QtHRyy5LODE',
@@ -83,11 +84,7 @@ export let videoIDs = [
   
 ];
 
-var player;
-
-let playerProps= {
-        currentVideoId: 0
-    }
+var player, currentVideoId = 0;
 
 window.addEventListener("iframeApiReady", function(e) {
   player = new YT.Player('player', {
@@ -109,7 +106,7 @@ window.addEventListener("iframeApiReady", function(e) {
 });
 
 function onPlayerReady(event) {
-  event.target.loadVideoById(videoIDs[playerProps.currentVideoId]);
+  event.target.loadVideoById(videoIDs[currentVideoId]);
     // bind events
     var playButton = document.getElementById("play-button");
     playButton.addEventListener("click", function() {
@@ -147,11 +144,12 @@ function onPlayerReady(event) {
 
 }
 
-function onPlayerStateChange(event) {
+export function onPlayerStateChange(event) {
+    musicProps.imageValue = player.getVideoData()['video_id'];
   if (event.data == YT.PlayerState.ENDED) {
-    playerProps.currentVideoId++;
+    currentVideoId++;
     if (playerProps.currentVideoId > videoIDs.length) {
-        player.loadVideoById(videoIDs[playerProps.currentVideoId]);
+        player.loadVideoById(videoIDs[currentVideoId]);
     }
   }
 }
