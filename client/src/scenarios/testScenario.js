@@ -1,6 +1,5 @@
 // List of instructions to execute within the simulation
 let testScenario = {
-    layout: "SimpleDash",
     instructions: new Map([
         [0, [{"instruction": "setSpeed", "value": "55"}, {"instruction": "setRPM", "value": "1200"}]],
         [4, [{"instruction": "emitInstruction", "value": "Testing"}]],

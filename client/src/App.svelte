@@ -16,8 +16,10 @@
 
 	// --[ Scenario Imports ]--
 	import { testScenario } from './scenarios/testScenario';
+	import { lightScenario } from "./scenarios/lightScenario";
+	import { fastScenario } from "./scenarios/fastScenario";
 
-	// --[ Essential App Variables ]--
+    // --[ Essential App Variables ]--
 
     // [HACK] This is a workaround for passing messages to children
     let messageRecipients = [];
@@ -261,6 +263,11 @@
             // Set the simulationRunning flag
             simulationRunning = false;
 
+            // Set the current scenario completed flag to true
+            if (selectedScenario !== undefined) {
+                selectedScenario.completed = true;
+            }
+
             // [FIXME] Remove this alert once a more elegant solution is implemented
             alert("You have completed this scenario. Please move onto the next one, if it exists.");
         }
@@ -305,7 +312,7 @@
         handleMessage({
             "timestamp": Date.now(),
             "name": "simulationStart",
-            "category": "majorevent",
+            "category": "majorEvent",
             "intendedTarget": null,
             "tags": ["App"],
             "payload": {}
@@ -320,14 +327,38 @@
 
     // --[ Scenario & Layouts Setup ]--
 
+    // Variable to store the currently selected scenario
+    let selectedScenario;
+
     // Create a list of scenarios, their layouts, and their respective components
     const scenarios = [
-        {"name": "SimpleDash", "scenario": testScenario, "layoutName": "SimpleDash", "component": SimpleDash}
+        {
+            "name": "First",
+            "scenario": testScenario,
+            "layoutName": "SimpleDash",
+            "component": SimpleDash,
+            "completed": false
+        },
+        {
+            "name": "Second",
+            "scenario": lightScenario,
+            "layoutName": "SimpleDash",
+            "component": Instruction,
+            "completed": false
+        },
+        {
+            "name": "Third",
+            "scenario": fastScenario,
+            "layoutName": "SimpleDash",
+            "component": SimpleDash,
+            "completed": false
+        }
     ];
 
     // Define the default scenario to use within the simulation
+    selectedScenario = scenarios[0];    // Use the first one by default
     simulationScenarioStore.update((sc) => {
-        return testScenario;
+        return selectedScenario.scenario;
     });
 
 	// Function to switch scenarios/layouts
@@ -335,7 +366,7 @@
         console.debug("[DEBUG] Switching scenarios button pressed");
 
         // Find the scenario with the given name
-        const scene = scenarios.find(item => item.name == sceneName);
+        const scene = scenarios.find(scenario => scenario.name == sceneName);
         if (scene === undefined) {
             console.error("[ERROR] Selected scene not found! This is probably an implementation error!");
             return;
@@ -347,17 +378,26 @@
             return;
         }
 
-        // [TODO] Emit scenario change event
+        // Emit scenario change event
+        handleMessage({
+            "timestamp": Date.now(),
+            "name": "sceneChange",
+            "category": "majorEvent",
+            "intendedTarget": "records",
+            "tags": ["scenario", "layout"],
+            "payload": {
+                "newScene": sceneName
+            }
+        });
+
+        // Change the selected scenario
+        selectedScenario = scene;
 
         // Change scenarios in the data store
         simulationScenarioStore.update((previous) => {
             return scene.scenario;
         });
     }
-
-	// Specify which component should be used by grabbing the layout name from the scenario-specific store
-    let selectedLayout;
-    $: selectedLayout = scenarios.find(scenario => scenario.layoutName == $simulationScenarioStore.layout);
 </script>
 
 <style>
@@ -418,6 +458,23 @@
         text-align:"center";
     } */
 
+
+    .scene-selector-button {
+
+    }
+
+    .scene-selector-button:hover {
+        cursor: pointer;
+    }
+
+    .completed-scene-button {
+        background-color: #e74c3c;
+    }
+
+    .completed-scene-button:hover {
+        cursor: not-allowed;
+    }
+
     @media (min-width: 640px) {
         main {
             max-width: none;
@@ -451,32 +508,15 @@
     </Modal>
 {/if}
 
-<!-- Simulation Controls Container -->
-<div class="sim-controls">
-    <h3>Scene Selector</h3>
-    <div class="layout-switcher">
-        {#each scenarios as scene}
-            <!-- [HACK] Just need to use a nested function here to put arguments in the call -->
-            <button on:click={() => {switchScene(scene.name)}}>Scene: {scene.name}</button>
-        {/each}
-    </div>
-
-    <hr>
-
-    {#if !simulationRunning}
-        <!-- [TODO] Change the styles of the start button to be less amateurish -->
-        <button on:click={startSimulation} id="startButton">Start the Simulation</button>
-    {/if}
-</div>
-
 <!-- Instrumentation Component: Contains no visible elements -->
 <Instrumentation globalEventCache={$globalEventCache} bind:this={messageRecipients[0]} on:message={handleDispatchedEvent} bind:props={props.instrumentationData} />
 
 <!-- Primary Dashboard UI Section -->
 <main>
     <div class="dashArea-container">
-        <svelte:component this={selectedLayout.component} bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={$simulationDataStore} />
+        <svelte:component this={selectedScenario.component} bind:this={messageRecipients[1]} on:message={handleDispatchedEvent} bind:values={$simulationDataStore} />
     </div>
+
     <div class="game-container">
         <MiniGame bind:this={messageRecipients[2]} on:message={handleDispatchedEvent} bind:props={props.minigameData} />
 <!--        <div class="testButtons-container">-->
@@ -498,6 +538,28 @@
             <Instruction on:message={handleDispatchedEvent} bind:props={props.instructionData} />
         </div>
     {/if}
+
+    <!-- Simulation Controls Container -->
+    <div class="sim-controls">
+        <h3>Scene Selector</h3>
+        <div class="layout-switcher">
+            {#each scenarios as scene}
+                <!-- [HACK] Just need to use a nested function here to put arguments in the call -->
+                {#if scene.completed}
+                    <button on:click={() => {switchScene(scene.name)}} class="scene-selector-button completed-scene-button"><strike>Scene: {scene.name}</strike></button>
+                {:else}
+                    <button on:click={() => {switchScene(scene.name)}} class="scene-selector-button">Scene: {scene.name}</button>
+                {/if}
+            {/each}
+        </div>
+
+        <hr>
+
+        {#if !simulationRunning}
+            <!-- [TODO] Change the styles of the start button to be less amateurish -->
+            <button on:click={startSimulation} id="startButton">Start the Simulation</button>
+        {/if}
+    </div>
 <!--     <div class="message-container"> -->
 <!--     <Outer on:message={handleDispatchedEvent}/> -->
 <!--     </div> -->
