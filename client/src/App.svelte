@@ -263,6 +263,9 @@
             };
             handleMessage(toEmit);
 
+            // Reset the MiniGame score
+            props.minigameData.score = 0;
+
             // Set the simulationRunning flag
             simulationRunning = false;
 
