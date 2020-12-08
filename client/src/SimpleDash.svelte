@@ -11,6 +11,7 @@
     import MusicScreen from "./musicScreen.svelte";
     import SteeringWheel from "./SteeringWheel.svelte";
     import SeatWC from "./SeatWarmer.svelte";
+    import MPH from "./MPH.svelte";
     import Outer from "./Outer.svelte";
     import FuelTape from './FuelTape.svelte';
     import { testScenario } from './scenarios/testScenario';
@@ -22,6 +23,7 @@
         seatWarmerLeft: "cool",
         seatWarmerRight: "cool",
         hazardLights: false,
+        mph: 0,
     };
 
     let speedometerProps = {};
@@ -32,6 +34,7 @@
     let seatWarmerLeft = {};
     let seatWarmerRight = {};
     let hazardLights = {};
+    let mph = {};
 
     let tackySun = { status: "on" };
     let climateControl = { status: "on" };
@@ -358,20 +361,7 @@
                 <FuelTape />
             </div>
             <div class="mph-container">
-                <div style="font-weight:900; font-size:72px; margin-top:15%" id="x"> </div>
-                <script>
-                    var x = document.getElementById('x');
-                    var s = [0, 55, 65, 75, 76, 77, 78, 79, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80];
-                    var i = 0;
-
-                    (function loop() {
-                        console.log(i);
-                        x.innerHTML = s[i];
-                        if (++i < s.length) {
-                            setTimeout(loop, 750);
-                        }
-                    })();
-                </script>
+                <MPH bind:speed={values.speed} />
                 <!-- <svg
                     width="100%"
                     height="100%"
