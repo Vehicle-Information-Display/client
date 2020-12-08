@@ -1,0 +1,8 @@
+version: '2'
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: prod.Dockerfile
+    ports:
+      - "2048:5000"
