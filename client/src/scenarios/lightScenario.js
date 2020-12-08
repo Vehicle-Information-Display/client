@@ -1,6 +1,5 @@
 // List of instructions to execute within the simulation
-let testScenario = {
-    layout: "SimpleDash",
+let lightScenario = {
     instructions: new Map([
         [0, [{"instruction": "setSpeed", "value": "25"}, {"instruction": "setRPM", "value": "3000"}]],
         [5, [{"instruction": "setSpeed", "value": "15"}, {"instruction": "setRPM", "value": "1500"}]],
@@ -70,4 +69,4 @@ let testScenario = {
     ]
 };
 
-export {testScenario as testScenario};
+export {lightScenario as lightScenario};

@@ -63,8 +63,8 @@
             const parsed = res.json();
 
             // [FIXME] Remove this response logging in production
-            console.log("[DEBUG] Sent data to server, got response: ");
-            console.log(parsed);
+            console.debug("[DEBUG] Sent data to server, got response: ");
+            console.debug(parsed);
 
             // [TODO] If response is success, clear the cache, otherwise, retry
         });
