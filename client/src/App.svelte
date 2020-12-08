@@ -13,6 +13,7 @@
 
 	// --[ Layout/Scenario Imports ]--
     import SimpleDash from './SimpleDash.svelte';
+    import ArmaanDash from './ArmaanDash.svelte';
 
 	// --[ Scenario Imports ]--
 	import { testScenario } from './scenarios/testScenario';
@@ -341,7 +342,7 @@
     const scenarios = [
         {
             "name": "First",
-            "scenario": testScenario,
+            "scenario": keyPressScenario,
             "layoutName": "SimpleDash",
             "component": SimpleDash,
             "completed": false
@@ -350,16 +351,16 @@
             "name": "Second",
             "scenario": keyPressScenario,
             "layoutName": "SimpleDash",
-            "component": SimpleDash,
+            "component": ArmaanDash,
             "completed": false
         },
-        {
-            "name": "Third",
-            "scenario": fastScenario,
-            "layoutName": "SimpleDash",
-            "component": SimpleDash,
-            "completed": false
-        },
+        // {
+        //     "name": "Third",
+        //     "scenario": fastScenario,
+        //     "layoutName": "SimpleDash",
+        //     "component": SimpleDash,
+        //     "completed": false
+        // },
     ];
 
     // Define the default scenario to use within the simulation

@@ -7,8 +7,8 @@ let keyPressScenario = {
         [11, [{"instruction": "emitInstruction", "value": "Press G"}]],
         [12, [{"instruction": "setSpeed", "value": "77"}, {"instruction": "setRPM", "value": "3100"}]],
         [13, [{"instruction": "setSpeed", "value": "78"}, {"instruction": "setRPM", "value": "3200"}]],
-        [14, [{"instruction": "emitInstruction", "value": "Press P"}]],
-        [15, [{"instruction": "setSpeed", "value": "80"}, {"instruction": "setRPM", "value": "3500"}]],
+        [14, [{"instruction": "emitInstruction", "value": "Press P when speed passes 80 MHh"}]],
+        [15, [{"instruction": "setSpeed", "value": "85"}, {"instruction": "setRPM", "value": "3500"}]],
         [51, [{"instruction": "emitMajorEvent", "value": "end"}]]
     ]),
     
