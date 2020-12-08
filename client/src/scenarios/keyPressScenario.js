@@ -11,6 +11,12 @@ let keyPressScenario = {
         [15, [{"instruction": "setSpeed", "value": "79"}, {"instruction": "setRPM", "value": "3500"}]],
         [25, [{"instruction": "setSpeed", "value": "78"}, {"instruction": "setRPM", "value": "3300"}]],
         [28, [{"instruction": "setSpeed", "value": "89"}, {"instruction": "setRPM", "value": "4000"}]],
+        [35, [{"instruction": "emitInstruction", "value": "Press P when speed drops to 40 MHh or below"}]],
+        [38, [{"instruction": "setSpeed", "value": "50"}, {"instruction": "setRPM", "value": "3500"}]],
+        [45, [{"instruction": "setSpeed", "value": "41"}, {"instruction": "setRPM", "value": "2900"}]],
+        [46, [{"instruction": "setSpeed", "value": "40"}, {"instruction": "setRPM", "value": "2900"}]],
+        [47, [{"instruction": "setSpeed", "value": "41"}, {"instruction": "setRPM", "value": "2800"}]],
+        [48, [{"instruction": "setSpeed", "value": "35"}, {"instruction": "setRPM", "value": "2700"}]],
         [51, [{"instruction": "emitMajorEvent", "value": "end"}]]
     ]),
     
