@@ -1,9 +1,10 @@
 // List of instructions to execute within the simulation
-let testScenario = {
+let fastScenario = {
     instructions: new Map([
-        [0, [{"instruction": "setSpeed", "value": "55"}, {"instruction": "setRPM", "value": "1200"}]],
-        [4, [{"instruction": "emitInstruction", "value": "Testing"}]],
-        [5, [{"instruction": "setSpeed", "value": "65"}, {"instruction": "setRPM", "value": "3800"}]],
+        [0, [{"instruction": "setSpeed", "value": "120"}, {"instruction": "setRPM", "value": "7500"}]],
+        [0.5, [{"instruction": "setSpeed", "value": "0"}, {"instruction": "setRPM", "value": "0"}]],
+        [1, [{"instruction": "emitInstruction", "value": "Testing"}]],
+        [5, [{"instruction": "setSpeed", "value": "65"}, {"instruction": "setRPM", "value": "1200"}]],
         [6, [{"instruction": "setAlert", "value": "Testing alert system"}]],
         [10, [{"instruction": "setSpeed", "value": "75"}, {"instruction": "setRPM", "value": "4500"}]],
         [11, [{"instruction": "setSpeed", "value": "76"}, {"instruction": "setRPM", "value": "3000"}]],
@@ -68,4 +69,4 @@ let testScenario = {
     ]
 };
 
-export {testScenario as testScenario};
+export {fastScenario as fastScenario};

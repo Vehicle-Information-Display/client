@@ -1,16 +1,17 @@
 // List of instructions to execute within the simulation
-let testScenario = {
+let lightScenario = {
     instructions: new Map([
-        [0, [{"instruction": "setSpeed", "value": "55"}, {"instruction": "setRPM", "value": "1200"}]],
-        [4, [{"instruction": "emitInstruction", "value": "Testing"}]],
-        [5, [{"instruction": "setSpeed", "value": "65"}, {"instruction": "setRPM", "value": "3800"}]],
+        [0, [{"instruction": "setSpeed", "value": "25"}, {"instruction": "setRPM", "value": "3000"}]],
+        [5, [{"instruction": "setSpeed", "value": "15"}, {"instruction": "setRPM", "value": "1500"}]],
         [6, [{"instruction": "setAlert", "value": "Testing alert system"}]],
-        [10, [{"instruction": "setSpeed", "value": "75"}, {"instruction": "setRPM", "value": "4500"}]],
-        [11, [{"instruction": "setSpeed", "value": "76"}, {"instruction": "setRPM", "value": "3000"}]],
-        [12, [{"instruction": "setSpeed", "value": "77"}, {"instruction": "setRPM", "value": "3100"}]],
-        [13, [{"instruction": "setSpeed", "value": "78"}, {"instruction": "setRPM", "value": "3200"}]],
-        [14, [{"instruction": "setSpeed", "value": "79"}, {"instruction": "setRPM", "value": "3300"}]],
-        [15, [{"instruction": "setSpeed", "value": "80"}, {"instruction": "setRPM", "value": "3500"}]],
+        [10, [{"instruction": "setSpeed", "value": "55"}, {"instruction": "setRPM", "value": "4500"}]],
+        [11, [{"instruction": "setSpeed", "value": "36"}, {"instruction": "setRPM", "value": "2000"}]],
+        [12, [{"instruction": "setSpeed", "value": "27"}, {"instruction": "setRPM", "value": "2100"}]],
+        [13, [{"instruction": "setSpeed", "value": "38"}, {"instruction": "setRPM", "value": "3200"}]],
+        [14, [{"instruction": "setSpeed", "value": "39"}, {"instruction": "setRPM", "value": "1300"}]],
+        [15, [{"instruction": "setSpeed", "value": "10"}, {"instruction": "setRPM", "value": "1000"}]],
+        [18, [{"instruction": "setSpeed", "value": "50"}, {"instruction": "setRPM", "value": "4000"}]],
+        [20, [{"instruction": "setSpeed", "value": "30"}, {"instruction": "setRPM", "value": "3000"}]],
         [51, [{"instruction": "emitMajorEvent", "value": "end"}]]
     ]),
     minigameBlocks: [
@@ -18,7 +19,7 @@ let testScenario = {
         [0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,1,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,1,0,0,1,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0,0],
         [1,0,0,0,0,0,0,1,0,0,1,0],
         [0,0,0,0,0,0,0,0,0,0,0,0],
@@ -28,19 +29,7 @@ let testScenario = {
         [0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,1,0,1,0,0,0,1,1,0,1],
         [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,0,0,1,0,1,0,1,0,0,1],
         [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,1,0,0,1,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,0,0,0,0,0,1,0,0,1,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,1,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,1,0,0,1,0,0,1,1,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,1,0,1,0,0,0,1,1,0,1],
-        [0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,0,0,1,0,1,0,1,0,0,1],
         [0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,1,0,0,1,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0,0],
@@ -60,7 +49,19 @@ let testScenario = {
         [0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,1,0,1,0,0,1,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0,0],
-        [1,0,1,0,0,1,0,0,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,0,1,0,0,0,1,1,0,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,1,0,0,1,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,1,0,1,0,0,0,1,1,0,1],
         [0,0,0,0,0,0,0,0,0,0,0,0],
@@ -68,4 +69,4 @@ let testScenario = {
     ]
 };
 
-export {testScenario as testScenario};
+export {lightScenario as lightScenario};

@@ -423,7 +423,8 @@
                 <fontSize>SA</fontSize>
             </div>
             <div class="dNav-container">
-                <fontSize>NAV</fontSize>
+                <!-- <fontSize>NAV</fontSize> -->
+                <img src="img/horNav.PNG" width="100%" height="100%" alt="">
             </div>
         </div>
         <div class="wheel-container">
@@ -453,8 +454,9 @@
             </div>
         </div>
         <div class="nav-container">
-            <fontSize>Nav</fontSize><br />
-            <Outer on:message={handleComponentEvent} />
+            <!-- <fontSize>Nav</fontSize><br /> -->
+            <img src="img/vertNav.PNG" width="100%" height="100%" alt="">
+            <!-- <Outer on:message={handleComponentEvent} /> -->
         </div>
         <div class="music-container">
             <div class="musicButtons-container">
