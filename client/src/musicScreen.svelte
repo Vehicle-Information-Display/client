@@ -1,5 +1,7 @@
-<script>
-
+<script context="module">
+	let musicProps = {
+		imageValue: 0
+	}
 </script>
 
 
@@ -72,7 +74,11 @@ iframe {
 </style>
 
     <div style="width:100%;height:100%;display: flex;align-items: center;justify-content: center;">
-		<div><p>PUT STUFF HERE</p></div>
+		
+		{#if musicProps.imageValue == 0}
+		<img src="img/GymnopedieNO1.jpg" width="50%" height="50%" alt="">
+		{/if}
+
     <div style="vertical-align:middle;" id="player"></div>
     </div>
 
