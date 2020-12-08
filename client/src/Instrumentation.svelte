@@ -37,6 +37,17 @@
     // Send all events to the server in the form of an entire simulation run
     function sendSimulationRun(url, uid, dashboardLayout, instructions, simulationEvents) {
 
+        // Make sure required data is present
+        if (uid === undefined || uid === null || uid < 0) {
+            alert("No userID! Please make sure to register! You cannot submit without a registering!");
+            return;
+        }
+
+        // Alert if the app is being run in a development context
+        if (url == "http://localhost:8080") {
+            console.warn("[WARNING] The app is being run in a development context! Server is localhost!");
+        }
+
         // Build the request body
         const body = {
             "type": "insertSimRun",
