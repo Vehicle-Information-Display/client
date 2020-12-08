@@ -420,7 +420,7 @@
                 <fontSize>SA</fontSize>
             </div>
             <div class="dNav-container">
-                <img src="/img/horNav.PNG" atl=""/>
+                <img src="img/horNav.PNG" width="100%" height="100%" alt="">
             </div>
         </div>
         <div class="wheel-container">
@@ -450,6 +450,7 @@
             </div>
         </div>
         <div class="nav-container">
+            <img src="img/vertNav.PNG" width="100%" height="100%" alt="">
         </div>
         <div class="music-container">
             <div class="musicButtons-container">
