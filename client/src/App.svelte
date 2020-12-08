@@ -17,7 +17,8 @@
 	// --[ Scenario Imports ]--
 	import { testScenario } from './scenarios/testScenario';
 	import { lightScenario } from "./scenarios/lightScenario";
-	import { fastScenario } from "./scenarios/fastScenario";
+    import { fastScenario } from "./scenarios/fastScenario";
+    import { keyPressScenario } from "./scenarios/keyPressScenario";
 
     // --[ Essential App Variables ]--
 
@@ -341,9 +342,9 @@
         },
         {
             "name": "Second",
-            "scenario": lightScenario,
+            "scenario": keyPressScenario,
             "layoutName": "SimpleDash",
-            "component": Instruction,
+            "component": SimpleDash,
             "completed": false
         },
         {
@@ -352,7 +353,7 @@
             "layoutName": "SimpleDash",
             "component": SimpleDash,
             "completed": false
-        }
+        },
     ];
 
     // Define the default scenario to use within the simulation
