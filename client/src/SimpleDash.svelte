@@ -358,17 +358,17 @@
                 <FuelTape />
             </div>
             <div class="mph-container">
-                <div style="font-weight:900; font-size:72px; margin-top:10%" id="x"> </div>
+                <div style="font-weight:900; font-size:72px; margin-top:15%" id="x"> </div>
                 <script>
                     var x = document.getElementById('x');
-                    var s = [0, 0, 10, 20, 50, 70, 75, 75, 80, 75, 60, 55, 40, 30, 25, 30, 20, 10, 20, 50, 70, 75, 75, 80, 75, 60, 55, 40, 30, 25, 30, 20];
+                    var s = [0, 55, 65, 75, 76, 77, 78, 79, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80];
                     var i = 0;
 
                     (function loop() {
                         console.log(i);
                         x.innerHTML = s[i];
                         if (++i < s.length) {
-                            setTimeout(loop, 1000);
+                            setTimeout(loop, 750);
                         }
                     })();
                 </script>
